@@ -28,6 +28,7 @@ MailerClass = (options) ->
   check options, Match.ObjectIncluding(
     templates: Object
     helpers: Match.Optional Object
+    layout: Match.Optional Object
   )
 
   settings = _.extend({}, Mailer.settings, options.settings)
@@ -58,22 +59,39 @@ MailerClass = (options) ->
       webResources:
         images: false
 
-    addCSS = (css) ->
-      content = juice.inlineContent(content, css, juiceOpts)
+    addCSS = (css, html) ->
+      juice.inlineContent(html, css, juiceOpts)
 
     # .. then any attached CSS file paths.
     if template.css
-      addCSS Utils.readFile(template.css)
+      content = addCSS Utils.readFile(template.css), content
 
     # .. and compile and inline any SCSS file paths.
     if template.scss
-      addCSS Utils.toCSS(template.scss)
+      content = addCSS Utils.toCSS(template.scss), content
+
+    if options.layout? and template.layout isnt false
+      layout = options.layout
+      layoutContent = Utils.readFile(layout.path)
+
+      if layout.css
+        layoutContent = addCSS Utils.readFile(layout.css), layoutContent
+
+      if layout.scss
+        layoutContent = addCSS Utils.toCSS(layout.scss), layoutContent
+
+      SSR.compileTemplate(layout.name, layoutContent)
+      addHelpers layout
+
 
     # This will place the template function in
     #
     #   Template.<template.name>
 
     tmpl = SSR.compileTemplate(template.name, content)
+
+    if layout?
+      tmpl.__layout = layout.name
 
     addHelpers template
 
@@ -83,13 +101,17 @@ MailerClass = (options) ->
   # Will compile the template if not done already.
   render = (templateName, data) ->
     check templateName, String
-    check data, Match.Optional(Object)
+    check data, Match.Optional Object
 
     if not Template[templateName]
       compile _.findWhere(options.templates, name: templateName)
 
-    Utils.addDoctype SSR.render templateName, data
+    rendered = SSR.render templateName, data
 
+    if Template[templateName].__layout?
+      rendered = SSR.render Template[templateName].__layout, body: rendered
+
+    Utils.addDoctype rendered
 
   # Send an email.
   sendEmail = (options) ->
