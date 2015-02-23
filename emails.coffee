@@ -202,7 +202,7 @@ MailerClass = (options) ->
 # method, but still initialize variables in the main
 # function body of 'MailerClass'.
 Mailer.init = (opts) ->
-    mailer = MailerClass(opts)
-    mailer.init()
+  mailer = MailerClass(opts)
+  mailer.init()
 
-    _.extend(this, mailer)
+  _.extend(this, mailer)
