@@ -20,9 +20,9 @@ Helpers =
   baseUrl: (path) ->
     Utils.joinUrl(Mailer.settings.baseUrl, path)
 
-  emailUrlFor: ->
+  emailUrlFor: (route, params) ->
     if Router
-      Utils.joinUrl Mailer.settings.baseUrl, Router.path.apply(Router, arguments)
+      Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, route, params.hash)
 
 MailerClass = (options) ->
   check options, Match.ObjectIncluding(
