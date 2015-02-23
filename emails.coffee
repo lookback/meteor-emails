@@ -60,7 +60,7 @@ MailerClass = (options) ->
         images: false
 
     addCSS = (css, html) ->
-      juice.inlineContent(html, css, juiceOpts)
+      return if css then juice.inlineContent(html, css, juiceOpts) else html
 
     # .. then any attached CSS file paths.
     if template.css

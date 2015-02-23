@@ -3,7 +3,7 @@ path = Npm.require 'path'
 sass = Npm.require 'node-sass'
 
 share.MailerUtils =
-  
+
   joinUrl: (base, path) ->
     # Remove any trailing slashes
     base = base.replace(/\/$/, '')
@@ -33,4 +33,5 @@ share.MailerUtils =
     catch ex
       # ex is somehow a JSON string.
       e = JSON.parse(ex)
-      throw new Meteor.Error 500, 'Sass failed to compile: ' + e.file or scss, e.message
+      console.error 'Sass failed to compile: ' + e.message
+      console.error 'In ' + (e.file or scss)
