@@ -76,9 +76,17 @@ MailerClass = (options) ->
 
       if layout.css
         layoutContent = addCSS Utils.readFile(layout.css), layoutContent
+        content = addCSS Utils.readFile(layout.css), content
 
       if layout.scss
         layoutContent = addCSS Utils.toCSS(layout.scss), layoutContent
+        content = addCSS Utils.toCSS(layout.scss), content
+
+      if template.css
+        layoutContent = addCSS Utils.readFile(template.css), layoutContent
+
+      if template.scss
+        layoutContent = addCSS Utils.toCSS(template.scss), layoutContent
 
       SSR.compileTemplate(layout.name, layoutContent)
       addHelpers layout
