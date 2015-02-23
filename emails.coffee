@@ -93,17 +93,21 @@ MailerClass = (options) ->
       to: String
       subject: String
       template: String
-      data: Match.Optional(Object)
+      replyTo: Match.Optional String
+      from: Match.Optional String
+      data: Match.Optional Object
 
-    html = render options.template, options.data
-
-    Email.send(
-      from: settings.from
+    defaults =
       replyTo: settings.replyTo
-      to: options.to
-      subject: options.subject
-      html: html
-    )
+      from: settings.from
+
+    opts = _.extend {}, defaults, options
+
+    # Render HTML with optional data context
+    opts.html = render options.template, options.data
+
+    # Send email
+    Email.send(opts)
 
 
   # Add routes for easy in browser debugging.
