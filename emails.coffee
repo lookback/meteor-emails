@@ -159,7 +159,7 @@ MailerClass = (options) ->
 
       console.log 'Adding route: /' + path
 
-      Router.route 'emailPreview',
+      Router.route "preview#{template.name}Email",
         path: path
         where: 'server'
         action: ->
@@ -182,7 +182,7 @@ MailerClass = (options) ->
 
       console.log 'Adding route /' + path
 
-      Router.route 'sendEmail',
+      Router.route "send#{template.name}Email",
         path: path
         where: 'server'
         action: ->
