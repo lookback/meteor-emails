@@ -111,13 +111,27 @@ MailerClass = (options) ->
     check templateName, String
     check data, Match.Optional Object
 
-    if not Template[templateName]
+    tmpl = Template[templateName]
+
+    if not tmpl
       compile _.findWhere(options.templates, name: templateName)
 
-    rendered = SSR.render templateName, data
+    rendered = SSR.render tmpl, data
 
-    if Template[templateName].__layout?
-      rendered = SSR.render Template[templateName].__layout, body: rendered
+    if tmpl.__layout?
+      layout = tmpl.__layout
+
+      if tmpl.__helpers.has 'preview'
+        preview = tmpl.__helpers.get('preview')
+      else if data.preview
+        preview = data.preview
+
+      layoutData = _.extend({}, data,
+        body: rendered
+        preview: preview
+      )
+
+      rendered = SSR.render layout, layoutData
 
     Utils.addDoctype rendered
 
