@@ -186,7 +186,7 @@ MailerClass = (options) ->
 
           @response.end(html, 'utf8')
 
-    addSend: (template, to) ->
+    addSend: (template) ->
       check template.name, String
       check template.route,
         path: String
@@ -200,6 +200,8 @@ MailerClass = (options) ->
         path: path
         where: 'server'
         action: ->
+          to = @params.query.to or settings.testEmail
+
           if to?
             data = template.route.data and template.route.data.apply(this, arguments)
 
@@ -218,7 +220,7 @@ MailerClass = (options) ->
 
           else
             @response.writeHead 400
-            @response.end("No testEmail provided in settings.")
+            @response.end("No testEmail provided.")
 
   # Init routine. Precompiles all templates provided and
   # setup routes if provided and if in dev mode.
@@ -231,7 +233,7 @@ MailerClass = (options) ->
 
         if template.route and process.env.NODE_ENV is 'development'
           Routes.addPreview template
-          Routes.addSend template, settings.testEmail
+          Routes.addSend template
 
   # Export
 
