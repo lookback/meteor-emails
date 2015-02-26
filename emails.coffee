@@ -112,9 +112,10 @@ MailerClass = (options) ->
     check data, Match.Optional Object
 
     tmpl = Template[templateName]
+    template = _.findWhere(options.templates, name: templateName)
 
     if not tmpl
-      compile _.findWhere(options.templates, name: templateName)
+      compile template
 
     rendered = SSR.render tmpl, data
 
@@ -126,8 +127,12 @@ MailerClass = (options) ->
       else if data.preview
         preview = data.preview
 
+      if template.extraCSS
+        css = Utils.readFile template.extraCSS
+
       layoutData = _.extend({}, data,
         body: rendered
+        css: css
         preview: preview
       )
 
