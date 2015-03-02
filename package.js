@@ -13,14 +13,14 @@ Npm.depends({
 });
 
 Package.onUse(function(api) {
-  api.versionsFrom('1.0');
+  api.versionsFrom('METEOR@1.0.0');
 
   api.use([
     'check',
     'underscore',
     'coffeescript',
     'email',
-    'iron:router',
+    'iron:router@1.0.7',
     'meteorhacks:ssr@2.1.2'
   ], where);
 
