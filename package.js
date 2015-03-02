@@ -13,7 +13,7 @@ Npm.depends({
 });
 
 Package.onUse(function(api) {
-  api.versionsFrom('METEOR@1.0.0');
+  api.versionsFrom('0.9.3');
 
   api.use([
     'check',
