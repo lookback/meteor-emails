@@ -3,7 +3,7 @@ var where = 'server';
 Package.describe({
   name: 'lookback:emails',
   summary: 'Send emails with server side templates.',
-  version: '0.2.0'
+  version: '0.3.0'
 });
 
 Npm.depends({
