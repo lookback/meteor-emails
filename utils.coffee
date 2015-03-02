@@ -2,11 +2,21 @@ fs = Npm.require 'fs'
 path = Npm.require 'path'
 sass = Npm.require 'node-sass'
 
+# This package assumes that assets (templates, SCSS, CSS ..) are
+# stored in the `private` directory. Thanks to that, Meteor won't
+# touch the HTML and CSS, which are non-JS files.
+#
+# However, since the file paths are screwed up when bundling and
+# deploying Meteor apps, we need to set the BUNDLE_PATH env var
+# to keep track of where the bundle lives.
+#
+# When deployed, set the BUNDLE_PATH env var to
+# the location, perhaps:
+#   /var/www/app/bundle
 if process.env.BUNDLE_PATH
-  # BUNDLE_PATH = /var/www/app/bundle
   ROOT = path.join(process.env.BUNDLE_PATH, 'programs', 'server', 'assets', 'app')
 else
-  # PWD = /lookback-emailjobs/app
+# In development, using PWD is fine.
   ROOT = path.join(process.env.PWD, 'private')
 
 share.MailerUtils =
