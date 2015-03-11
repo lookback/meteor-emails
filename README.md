@@ -54,9 +54,9 @@ A `Mailer` global will exported on the server.
   }
     ```
 
-- `Mailer.precompile(template)`. Precompile a `template` object.
-- `Mailer.render('templateName', [data])`. Render a template with optional data context.
-- `Mailer.send(Object)`. Send an email.
+- `Mailer.precompile(template)`. Precompile a `template` object and returns a `Blaze.Template`.
+- `Mailer.render('templateName', [data])`. Render a template with optional data context and return the raw, rendered string.
+- `Mailer.send(Object)`. Send an email. Returns `true` if mail was sent without errors, else `false`.
 
     Takes a plain object with the following properties:
     ```js
@@ -302,6 +302,29 @@ Paths to HTML templates and SCSS/CSS can be a bit tricky when deploying your app
 Meteor doesn't touch files in the `private` directory ([docs](http://docs.meteor.com/#/full/structuringyourapp)). There we'll put our resources, and will thus be the *root relative* path when referring to HTML and CSS from template objects (see above).
 
 When deployed, we must set the `BUNDLE_PATH` environment variable which refers to the directory where your app bundle lives in order to sniff out the absolute paths to the resources. We hope this will get easier in the future.
+
+### Sample file structure
+
+Since it's tricky to get an overview sometimes:
+
+```
+private/
+  |- activity-email/
+    |- activity-email.html
+    |- activity-email.scss
+  |- layout.html
+  |- layout.scss
+server/
+  |- lib/
+    |- init.coffee               # Setup namespaces: Templates, Helpers.
+  |-  template-helpers.coffee   # Setup global TemplateHelpers.
+  |- templates/
+    |- activity-email/
+      |- _helpers.coffee        # Attach activity email specific helpers to Helpers.ActivityEmail
+      |- activity-email.coffee  # Define Templates.activityEmail. Include helpers.
+    |- # .. more template dirs.
+  |- init.coffee                # Init Mailer with Templates and TemplateHelpers
+```
 
 ### Logging
 
