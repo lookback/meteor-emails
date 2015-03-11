@@ -2,7 +2,7 @@ var where = 'server';
 
 Package.describe({
   name: 'lookback:emails',
-  summary: 'Send emails with server side templates.',
+  summary: 'Send HTML emails with server side Blaze templates. Preview and debug in the browser.',
   version: '0.3.0',
   documentation: null
 });
