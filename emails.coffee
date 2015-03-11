@@ -233,8 +233,10 @@ MailerClass = (options) ->
       data: Match.Optional Object
 
     defaults =
-      replyTo: settings.replyTo
       from: settings.from
+
+    if settings.replyTo
+      defaults.replyTo = settings.replyTo
 
     opts = _.extend {}, defaults, options
 
