@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>emails.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="emails.html">
+                emails.coffee
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>emails.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p><code>lookback:emails</code> is a small package for Meteor which helps you
+tremendously in the process of building, testing and debugging
+HTML emails in Meteor applications.</p>
+<p>See the <a href="https://github.com/lookback/meteor-emails">GitHub repo</a> for README.
+Made by Johan Brook for <a href="https://github.com/lookback">Lookback</a>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+TAG = <span class="hljs-string">'mailer'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2 id="setup">Setup</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Main exported symbol with some initial settings:</p>
+<ul>
+<li><code>routePrefix</code> is the top level path for the preview and send routes (see further down).</li>
+<li><code>baseUrl</code> is what root domain to base relative paths from.</li>
+<li><code>testEmail</code>, when testing emails, set this variable.</li>
+<li><code>logger</code>, optionally inject an external logger. Defaults to <code>console</code>.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Mailer =
+  <span class="hljs-attribute">settings</span>:
+    <span class="hljs-attribute">routePrefix</span>: <span class="hljs-string">'emails'</span>
+    <span class="hljs-attribute">baseUrl</span>: process.env.ROOT_URL
+    <span class="hljs-attribute">testEmail</span>: <span class="hljs-literal">null</span>
+    <span class="hljs-attribute">logger</span>: <span class="hljs-built_in">console</span>
+
+  <span class="hljs-attribute">config</span>: <span class="hljs-function"><span class="hljs-params">(newSettings)</span> -&gt;</span>
+    <span class="hljs-property">@settings</span> = _.extend(<span class="hljs-property">@settings</span>, newSettings)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h2 id="deps">Deps</h2>
+<p>Use <code>juice</code> for inlining CSS into the templates.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>juice = Npm.<span class="hljs-built_in">require</span> <span class="hljs-string">'juice'</span>
+Utils = share.MailerUtils</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h2 id="template-helpers">Template helpers</h2>
+<p>Built-in template helpers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Helpers =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p><code>baseUrl</code> gives you a full absolute URL from a relative path.</p>
+<pre><code>{{ baseUrl <span class="hljs-string">'/some-path'</span> }}<span class="hljs-function"> =&gt;</span> <span class="hljs-attribute">http</span>:<span class="hljs-regexp">//</span>root-domain.com/some-path
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">baseUrl</span>: <span class="hljs-function"><span class="hljs-params">(path)</span> -&gt;</span>
+    Utils.joinUrl(Mailer.settings.baseUrl, path)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p><code>emailUrlFor</code> takes an Iron Router route (with optional params) and
+creates an absolute URL.</p>
+<pre><code>{{ emailUrlFor <span class="hljs-string">'myRoute'</span> param=<span class="hljs-string">'foo'</span> }}<span class="hljs-function"> =&gt;</span> <span class="hljs-attribute">http</span>:<span class="hljs-regexp">//</span>root-domain.com/my-route/foo
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">emailUrlFor</span>: <span class="hljs-function"><span class="hljs-params">(route, params)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> Router
+      Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, route, params.hash)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <h1 id="the-mailer">The mailer</h1>
+<p>This is the “blueprint” of the Mailer object. It has the following interface:</p>
+<ul>
+<li><code>precompile</code></li>
+<li><code>render</code></li>
+<li><code>send</code></li>
+</ul>
+<p>As you can see, the mailer takes care of precompiling and rendering templates
+with data, as well as sending emails from those templates.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">
+<span class="hljs-title">MailerClass</span> = <span class="hljs-params">(options)</span> -&gt;</span>
+  check options, Match.ObjectIncluding(</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Mailer <em>must</em> take a <code>templates</code> object with template names as keys.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">templates</span>: Object</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Take optional template helpers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">helpers</span>: Match.Optional Object</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Take an optional layoute template object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">layout</span>: Match.Optional Object
+  )
+
+  settings = _.extend({}, Mailer.settings, options.settings)
+  globalHelpers = _.extend({}, Helpers, Blaze._globalHelpers, options.helpers)
+
+  Utils.setupLogger(settings.logger)
+<span class="hljs-function">
+  <span class="hljs-title">addHelpers</span> = <span class="hljs-params">(template)</span> -&gt;</span>
+    check template.name, String
+    check template.helpers, Match.Optional Object</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Use the built-in helpers, any global Blaze helpers, and injected helpers
+from options, and <em>additional</em> template helpers, and apply them to
+the template.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Template[template.name].helpers _.extend({}, globalHelpers, template.helpers)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <h2 id="compile">Compile</h2>
+<p>Function for compiling a template with a name and path to
+a HTML file to a template function, to be placed
+in the Template namespace.</p>
+<p>A <code>template</code> must have a path to a template HTML file, and
+can optionally have paths to any SCSS and CSS stylesheets.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">compile</span> = <span class="hljs-params">(template)</span> -&gt;</span>
+    check template, Match.ObjectIncluding(
+      <span class="hljs-attribute">path</span>: String
+      <span class="hljs-attribute">name</span>: String
+      <span class="hljs-attribute">scss</span>: Match.Optional String
+      <span class="hljs-attribute">css</span>: Match.Optional String
+    )</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Read the template as a string.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">try</span>
+      content = Utils.readFile template.path
+    <span class="hljs-keyword">catch</span> ex
+      Utils.Logger.error <span class="hljs-string">'Could not read template file: '</span>+template.path, TAG
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+
+    juiceOpts =
+      <span class="hljs-attribute">preserveMediaQueries</span>: <span class="hljs-literal">true</span>
+      <span class="hljs-attribute">removeStyleTags</span>: <span class="hljs-literal">true</span>
+      <span class="hljs-attribute">webResources</span>:
+        <span class="hljs-attribute">images</span>: <span class="hljs-literal">false</span>
+<span class="hljs-function">
+    <span class="hljs-title">addCSS</span> = <span class="hljs-params">(css, html)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> html <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> css
+
+      <span class="hljs-keyword">try</span>
+        <span class="hljs-keyword">return</span> juice.inlineContent(html, css, juiceOpts)
+      <span class="hljs-keyword">catch</span> ex
+        Utils.Logger.error <span class="hljs-string">'Could not add CSS to '</span>+template.name+<span class="hljs-string">': '</span> + ex.message, TAG
+        <span class="hljs-keyword">return</span> html</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>.. then any attached CSS file paths.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> template.css
+      content = addCSS Utils.readFile(template.css), content</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>.. and compile and inline any SCSS file paths.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> template.scss
+      content = addCSS Utils.toCSS(template.scss), content
+
+    <span class="hljs-keyword">if</span> options.layout? <span class="hljs-keyword">and</span> template.layout <span class="hljs-keyword">isnt</span> <span class="hljs-literal">false</span>
+      layout = options.layout
+      layoutContent = Utils.readFile(layout.path)
+
+      <span class="hljs-keyword">if</span> layout.css
+        layoutContent = addCSS Utils.readFile(layout.css), layoutContent
+        content = addCSS Utils.readFile(layout.css), content
+
+      <span class="hljs-keyword">if</span> layout.scss
+        layoutContent = addCSS Utils.toCSS(layout.scss), layoutContent
+        content = addCSS Utils.toCSS(layout.scss), content
+
+      <span class="hljs-keyword">if</span> template.css
+        layoutContent = addCSS Utils.readFile(template.css), layoutContent
+
+      <span class="hljs-keyword">if</span> template.scss
+        layoutContent = addCSS Utils.toCSS(template.scss), layoutContent
+
+      SSR.compileTemplate(layout.name, layoutContent)
+      addHelpers layout</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>This will place the template function in</p>
+<pre><code>Template.&lt;template.name&gt;
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    tmpl = SSR.compileTemplate(template.name, content)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Save the layout name on the template object for later.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> layout?
+      tmpl.__layout = layout.name</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Add helpers to template.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    addHelpers template
+
+    <span class="hljs-keyword">return</span> tmpl</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <h2 id="render">Render</h2>
+<p>Render a template by name, with optional data context.
+Will compile the template if not done already.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">render</span> = <span class="hljs-params">(templateName, data)</span> -&gt;</span>
+    check templateName, String
+    check data, Match.Optional Object
+
+    template = _.findWhere(options.templates, <span class="hljs-attribute">name</span>: templateName)
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> Template[templateName]
+      compile template
+
+    tmpl = Template[templateName]
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> tmpl
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Meteor.Error <span class="hljs-number">500</span>, <span class="hljs-string">'Could not find template: '</span>+templateName
+
+    rendered = SSR.render tmpl, data
+
+    <span class="hljs-keyword">if</span> tmpl.__layout?
+      layout = tmpl.__layout</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>When applying to a layout, some info from the template
+(like the first preview lines) needs to be applied to the
+layout scope as well.</p>
+<p>Thus we fetch a <code>preview</code> helper from the template or
+<code>preview</code> prop in the data context to apply to the layout.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> tmpl.__helpers.has <span class="hljs-string">'preview'</span>
+        preview = tmpl.__helpers.get(<span class="hljs-string">'preview'</span>)
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> data.preview
+        preview = data.preview</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>The <code>extraCSS</code> property on a <code>template</code> is applied to
+the layout in <code>&lt;style&gt;</code> tags. Ideal for media queries.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> template.extraCSS
+        <span class="hljs-keyword">try</span>
+          css = Utils.readFile template.extraCSS
+        <span class="hljs-keyword">catch</span> ex
+          Utils.Logger.error <span class="hljs-string">'Could not add extra CSS when rendering '</span>+templateName+<span class="hljs-string">': '</span>+ex.message, TAG
+
+      layoutData = _.extend({}, data,
+        <span class="hljs-attribute">body</span>: rendered
+        <span class="hljs-attribute">css</span>: css
+        <span class="hljs-attribute">preview</span>: preview
+      )
+
+      rendered = SSR.render layout, layoutData
+
+    Utils.addDoctype rendered</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <h2 id="send">Send</h2>
+<p>The main sending-email function. Takes a set of usual email options,
+including the template name and optional data object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">sendEmail</span> = <span class="hljs-params">(options)</span> -&gt;</span>
+    check options,
+      <span class="hljs-attribute">to</span>: String
+      <span class="hljs-attribute">subject</span>: String
+      <span class="hljs-attribute">template</span>: String
+      <span class="hljs-attribute">replyTo</span>: Match.Optional String
+      <span class="hljs-attribute">from</span>: Match.Optional String
+      <span class="hljs-attribute">data</span>: Match.Optional Object
+
+    defaults =
+      <span class="hljs-attribute">replyTo</span>: settings.replyTo
+      <span class="hljs-attribute">from</span>: settings.from
+
+    opts = _.extend {}, defaults, options</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Render HTML with optional data context.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">try</span>
+      opts.html = render options.template, options.data
+    <span class="hljs-keyword">catch</span> ex
+      Utils.Logger.error <span class="hljs-string">'Could not render email before sending: '</span> + ex.message, TAG
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Send email</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">try</span>
+      Email.send(opts)
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">catch</span> ex
+      Utils.Logger.error <span class="hljs-string">'Could not send email: '</span> + ex.message, TAG
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <h2 id="routes">Routes</h2>
+<p>This package supports browser routes, so you can <strong>preview</strong>
+and <strong>send email designs</strong> from the browser.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  Routes =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>This function adds the <code>preview</code> route from a <code>template</code> object.
+It will apply the returned data from a <code>data</code> function on the
+provided <code>route</code> prop from the template.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">addPreview</span>: <span class="hljs-function"><span class="hljs-params">(template)</span> -&gt;</span>
+      check template.name, String
+      check template.route,
+        <span class="hljs-attribute">path</span>: String
+        <span class="hljs-attribute">data</span>: Match.Optional Function</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Typically <code>/emails/preview/myEmailTemplate</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      path = settings.routePrefix + <span class="hljs-string">'/preview'</span> + template.route.path
+
+      Utils.Logger.info <span class="hljs-string">'Adding route: /'</span> + path, TAG
+
+      Router.route <span class="hljs-string">"preview<span class="hljs-subst">#{template.name}</span>Email"</span>,
+        <span class="hljs-attribute">path</span>: path
+        <span class="hljs-attribute">where</span>: <span class="hljs-string">'server'</span>
+        <span class="hljs-attribute">action</span>:<span class="hljs-function"> -&gt;</span>
+
+          <span class="hljs-keyword">try</span>
+            data = template.route.data <span class="hljs-keyword">and</span> template.route.data.apply(<span class="hljs-keyword">this</span>, arguments)
+          <span class="hljs-keyword">catch</span> ex
+            msg = <span class="hljs-string">'Exception in '</span>+template.name+<span class="hljs-string">' data function: '</span>+ex.message
+            Utils.Logger.error msg, TAG
+            <span class="hljs-property">@response</span>.writeHead <span class="hljs-number">500</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-property">@response</span>.end msg</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Compile, since we wanna refresh markup and CSS inlining.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          compile template
+
+          Utils.Logger.info <span class="hljs-string">"Rendering <span class="hljs-subst">#{template.name}</span> ..."</span>, TAG
+
+          <span class="hljs-keyword">try</span>
+            html = render template.name, data
+            Utils.Logger.info <span class="hljs-string">"Rendering successful!"</span>, TAG
+          <span class="hljs-keyword">catch</span> ex
+            msg = <span class="hljs-string">'Could not preview email: '</span> + ex.message
+            Utils.Logger.error msg, TAG
+            html = msg
+
+          <span class="hljs-property">@response</span>.writeHead <span class="hljs-number">200</span>, <span class="hljs-string">'Content-Type'</span>: <span class="hljs-string">'text/html'</span>
+          <span class="hljs-property">@response</span>.end(html, <span class="hljs-string">'utf8'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>This function adds the <code>send</code> route, for easy sending emails from
+the browser.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">addSend</span>: <span class="hljs-function"><span class="hljs-params">(template)</span> -&gt;</span>
+      check template.name, String
+      check template.route,
+        <span class="hljs-attribute">path</span>: String
+        <span class="hljs-attribute">data</span>: Match.Optional Function
+
+      path = settings.routePrefix + <span class="hljs-string">'/send'</span> + template.route.path
+
+      Utils.Logger.info <span class="hljs-string">'Adding route /'</span> + path, TAG
+
+      Router.route <span class="hljs-string">"send<span class="hljs-subst">#{template.name}</span>Email"</span>,
+        <span class="hljs-attribute">path</span>: path
+        <span class="hljs-attribute">where</span>: <span class="hljs-string">'server'</span>
+        <span class="hljs-attribute">action</span>:<span class="hljs-function"> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Who to send to? It depends: it primarly reads from the <code>?to</code>
+query param, and secondly from the <code>testEmail</code> prop in settings.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          to = <span class="hljs-property">@params</span>.query.to <span class="hljs-keyword">or</span> settings.testEmail
+
+          Utils.Logger.info <span class="hljs-string">"Sending <span class="hljs-subst">#{template.name}</span> ..."</span>, TAG
+
+          <span class="hljs-keyword">if</span> to?
+            <span class="hljs-keyword">try</span>
+              data = template.route.data <span class="hljs-keyword">and</span> template.route.data.apply(<span class="hljs-keyword">this</span>, arguments)
+            <span class="hljs-keyword">catch</span> ex
+              Utils.Logger.error <span class="hljs-string">'Exception in '</span>+template.name+<span class="hljs-string">' data function: '</span>+ex.message, TAG
+              <span class="hljs-keyword">return</span>
+
+            res = sendEmail(
+              <span class="hljs-attribute">to</span>: to
+              <span class="hljs-attribute">data</span>: data
+              <span class="hljs-attribute">template</span>: template.name
+              <span class="hljs-attribute">subject</span>: <span class="hljs-string">'[TEST] '</span> + template.name
+            )
+
+            <span class="hljs-keyword">if</span> res <span class="hljs-keyword">is</span> <span class="hljs-literal">false</span>
+              <span class="hljs-property">@response</span>.writeHead <span class="hljs-number">500</span>
+              msg = <span class="hljs-string">'Did not send test email, something went wrong. Check the logs.'</span>
+            <span class="hljs-keyword">else</span>
+              <span class="hljs-property">@response</span>.writeHead <span class="hljs-number">200</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>If there’s no <code>MAIL_URL</code> environment variable, Meteor cannot send
+the email and echoes it out to <code>STDOUT</code> instead.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              reallySentEmail = !!process.env.MAIL_URL
+              msg = <span class="hljs-keyword">if</span> reallySentEmail <span class="hljs-keyword">then</span> <span class="hljs-string">"Sent test email to <span class="hljs-subst">#{to}</span>"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"Sent email to STDOUT"</span>
+
+            <span class="hljs-property">@response</span>.end(msg)
+
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-property">@response</span>.writeHead <span class="hljs-number">400</span>
+            <span class="hljs-property">@response</span>.end(<span class="hljs-string">"No testEmail provided."</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <h2 id="init">Init</h2>
+<p>Init routine. Precompiles all templates provided and
+setup routes if provided and if in dev mode.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">init</span> = -&gt;</span>
+    <span class="hljs-keyword">if</span> options.templates
+      _.each options.templates, <span class="hljs-function"><span class="hljs-params">(template, name)</span> -&gt;</span>
+        template.name = name
+
+        compile template</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Only add these routes when in dev mode.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> template.route <span class="hljs-keyword">and</span> process.env.NODE_ENV <span class="hljs-keyword">is</span> <span class="hljs-string">'development'</span>
+          Routes.addPreview template
+          Routes.addSend template
+
+  init()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <h2 id="export">Export</h2>
+<p>The “interface”.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">precompile</span>: compile
+  <span class="hljs-attribute">render</span>: render
+  <span class="hljs-attribute">send</span>: sendEmail</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>Exported symbol</p>
+<p>I wanna export a singleton symbol with an ‘init’
+method, but still initialize variables in the main
+function body of ‘MailerClass’.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Mailer.i<span class="hljs-function"><span class="hljs-title">nit</span> = <span class="hljs-params">(opts)</span> -&gt;</span>
+  mailer = MailerClass(opts)
+
+  _.extend(<span class="hljs-keyword">this</span>, mailer)</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

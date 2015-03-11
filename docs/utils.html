@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>utils.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="emails.html">
+                emails.coffee
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>utils.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Utils package for <code>lookback:emails</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+fs = Npm.<span class="hljs-built_in">require</span> <span class="hljs-string">'fs'</span>
+path = Npm.<span class="hljs-built_in">require</span> <span class="hljs-string">'path'</span>
+sass = Npm.<span class="hljs-built_in">require</span> <span class="hljs-string">'node-sass'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>This package assumes that assets (templates, SCSS, CSS ..) are
+stored in the <code>private</code> directory. Thanks to that, Meteor won’t
+touch the HTML and CSS, which are non-JS files.</p>
+<p>However, since the file paths are screwed up when bundling and
+deploying Meteor apps, we need to set the BUNDLE_PATH env var
+to keep track of where the bundle lives.</p>
+<p>When deployed, set the BUNDLE_PATH env var to the location, perhaps:
+    /var/www/app/bundle</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span> process.env.BUNDLE_PATH
+  ROOT = path.join(process.env.BUNDLE_PATH, <span class="hljs-string">'programs'</span>, <span class="hljs-string">'server'</span>, <span class="hljs-string">'assets'</span>, <span class="hljs-string">'app'</span>)
+<span class="hljs-keyword">else</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>In development, using PWD is fine.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  ROOT = path.join(process.env.PWD, <span class="hljs-string">'private'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Export the object on <code>share</code>, since CoffeeScript.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>share.MailerUtils =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Set up a logger to use through <code>MailerUtils.Logger</code>. Verify
+that necessary methods exists on the injected <code>logger</code> and
+fallback if not.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setupLogger</span>: <span class="hljs-function"><span class="hljs-params">(logger)</span> -&gt;</span>
+    res = [<span class="hljs-string">'info'</span>, <span class="hljs-string">'warn'</span>, <span class="hljs-string">'error'</span>].map <span class="hljs-function"><span class="hljs-params">(method)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> method <span class="hljs-keyword">in</span> logger
+        <span class="hljs-built_in">console</span>.warn <span class="hljs-string">"The injected logger does not support the <span class="hljs-subst">#{method}</span> method."</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+
+    <span class="hljs-keyword">if</span> _.compact(res).length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+      <span class="hljs-built_in">console</span>.warn <span class="hljs-string">'Falling back to the native logger.'</span>
+      <span class="hljs-property">@Logger</span> = <span class="hljs-built_in">console</span>
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@Logger</span> = logger
+
+  <span class="hljs-attribute">joinUrl</span>: <span class="hljs-function"><span class="hljs-params">(base, path)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Remove any trailing slashes.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    base = base.replace(<span class="hljs-regexp">/\/$/</span>, <span class="hljs-string">''</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Add front slash if not exist already.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">unless</span> <span class="hljs-regexp">/^\//</span>.test(path)
+      path = <span class="hljs-string">'/'</span> + path
+
+    <span class="hljs-keyword">return</span> base + path
+
+  <span class="hljs-attribute">addDoctype</span>: <span class="hljs-function"><span class="hljs-params">(html)</span> -&gt;</span>
+    <span class="hljs-string">'&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;\n'</span> + html
+
+  <span class="hljs-attribute">readFile</span>: <span class="hljs-function"><span class="hljs-params">(relativePathFromApp)</span> -&gt;</span>
+    file = path.join(ROOT, relativePathFromApp)
+
+    <span class="hljs-keyword">try</span>
+      <span class="hljs-keyword">return</span> fs.readFileSync(file, <span class="hljs-attribute">encoding</span>: <span class="hljs-string">'utf8'</span>)
+    <span class="hljs-keyword">catch</span> ex
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Meteor.Error <span class="hljs-number">500</span>, <span class="hljs-string">'Could not find file: '</span> + file, ex.message</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Take a path to a SCSS file and compiles it to CSS with <code>node-sass</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toCSS</span>: <span class="hljs-function"><span class="hljs-params">(scss)</span> -&gt;</span>
+    file = path.join(ROOT, scss)
+
+    <span class="hljs-keyword">try</span>
+      <span class="hljs-keyword">return</span> sass.renderSync(<span class="hljs-attribute">file</span>: file, <span class="hljs-attribute">sourceMap</span>: <span class="hljs-literal">false</span>).css
+    <span class="hljs-keyword">catch</span> ex</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p><code>ex</code> is somehow a JSON string.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      e = JSON.parse(ex)
+      <span class="hljs-built_in">console</span>.error <span class="hljs-string">'Sass failed to compile: '</span> + e.message
+      <span class="hljs-built_in">console</span>.error <span class="hljs-string">'In '</span> + (e.file <span class="hljs-keyword">or</span> scss)</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
