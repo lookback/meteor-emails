@@ -323,6 +323,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.3.1`. Don't expose `MailerClass`'s internal `init` method.
 - `0.3.0` - Initial publish.
 
 ## Contributing
