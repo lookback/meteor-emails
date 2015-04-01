@@ -12,5 +12,9 @@
     "node": true,
     "jquery": true,
     "meteor": true
+  },
+
+  "globals": {
+    "Mailer": false
   }
 }

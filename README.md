@@ -25,6 +25,18 @@ meteor add lookback:emails
 
 A `Mailer` global will exported on the server.
 
+## Sample app
+
+There is a sample application in this repo, in the `example` directory. Boot it up, and preview an email with:
+
+```bash
+cd example
+meteor
+open http://localhost:3000/emails/preview/sample/john
+```
+
+Please inspect the provided sample code for details.
+
 ## API
 
 `Mailer` has the following methods:

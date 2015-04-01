@@ -1,0 +1,63 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{{preview}}</title>
+
+    <style type="text/css">
+      {{{css}}}
+    </style>
+  </head>
+  <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+
+    <!-- start body table -->
+    <table cellspacing="0" cellpadding="0" border="0" height="100%" width="100%" class="body-table">
+      <tr>
+        <td class="body" align="center" valign="top">
+
+          <p class="hide preview-text">{{#if preview}}{{preview}}{{else}}Default preview.{{/if}}</p>
+
+          <!-- begin all -->
+          <table cellspacing="0" cellpadding="0" border="0" width="100%">
+
+            <!-- start header -->
+            <tr class="header"><td align="center">
+
+              <table cellspacing="0" cellpadding="0" border="0" class="container">
+                <tr>
+                  <td class="header__content" valign="top" align="center">
+
+                    <h1>Header</h1>
+
+                  </td>
+                </tr>
+              </table>
+            </td></tr><!-- end header -->
+
+            <!-- MAIN TEMPLATE CONTENT -->
+
+            <tr class="template-content">
+              <td align="center">
+                {{{ body }}}
+              </td>
+            </tr>
+
+            <!-- end MAIN TEMPLATE CONTENT -->
+
+
+            <!-- begin footer -->
+            <tr class="footer">
+              <td>
+                <p><small>Some footer content</small></p>
+              </td>
+            </tr>
+            <!-- end footer -->
+
+          </table><!-- end -->
+        </td>
+      </tr>
+    </table><!-- end body table -->
+
+  </body>
+</html>
