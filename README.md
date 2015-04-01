@@ -358,7 +358,8 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
-- `0.3.1`. Don't expose `MailerClass`'s internal `init` method.
+- `0.3.2` - Add Windows arch support for Meteor 1.1 RC
+- `0.3.1` - Don't expose `MailerClass`'s internal `init` method.
 - `0.3.0` - Initial publish.
 
 ## Contributing
