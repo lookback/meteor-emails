@@ -15,12 +15,14 @@ TAG = 'mailer'
 # - `baseUrl` is what root domain to base relative paths from.
 # - `testEmail`, when testing emails, set this variable.
 # - `logger`, optionally inject an external logger. Defaults to `console`.
+# - `disabled`, optionally disable the actual email sending. Useful for E2E testing. Defaults to `false`.
 Mailer =
   settings:
     routePrefix: 'emails'
     baseUrl: process.env.ROOT_URL
     testEmail: null
     logger: console
+    disabled: false
 
   config: (newSettings) ->
     @settings = _.extend(@settings, newSettings)
@@ -247,9 +249,10 @@ MailerClass = (options) ->
       Utils.Logger.error 'Could not render email before sending: ' + ex.message, TAG
       return false
 
-    # Send email
+    # Send email, unless sending is disabled
     try
-      Email.send(opts)
+      unless settings.disabled
+        Email.send(opts)
       return true
     catch ex
       Utils.Logger.error 'Could not send email: ' + ex.message, TAG
