@@ -8,7 +8,7 @@ Usually, building HTML emails yourself is tedious. On top of that, add the need 
 
 - **Server side rendering** with the [Meteor SSR](https://github.com/meteorhacks/meteor-ssr/) package. Use Blaze features and helpers like on the frontend.
 - **CSS inlining** with [Juice](http://npmjs.org/package/juice). No extra build step.
-- **Preview and debug** emails in development mode in your browser.
+- **Preview and debug** emails in development mode in your browser when developing.
 - **Layouts** for re-using markup.
 
 Help is appreciated in order to hammer out potential issues and bugs.
@@ -23,7 +23,7 @@ meteor add lookback:emails
 
 [Annotated source](http://lookback.github.io/meteor-emails/docs/emails.html)
 
-A `Mailer` global will exported on the server.
+A `Mailer` global will exported on the *server*.
 
 ## Sample app
 
@@ -52,6 +52,7 @@ Please inspect the provided sample code for details.
     baseUrl: process.env.ROOT_URL,      // The base domain to build absolute link URLs from in the emails.
     testEmail: null,                    // Default address to send test emails to.
     logger: console                     // Injected logger (see further below)
+    addRoutes: process.env.NODE_ENV === 'development' // Add routes for previewing and sending emails. Defaults to `true` in development.
   }
     ```
 
@@ -169,6 +170,18 @@ Mailer.send(
 ```
 
 Simple as a pie!
+
+#### Important note regarding template paths
+
+**tldr;** Set the `BUNDLE_PATH` environment variable to the absolute path to your Meteor app bundle directory.
+
+This package assumes that assets (templates, SCSS, CSS ..) are stored in the `private` directory. Thanks to that, Meteor won't touch the HTML and CSS, which are non-JS files. Unfortunately, Meteor packages can't access content in `private` with the `Assets.getText()` method, so we need the *absolute path* to the template directory.
+
+However, since the file paths are screwed up when bundling and deploying Meteor apps, we need to set the `BUNDLE_PATH` env var to keep track of where the bundle lives. When deployed, set the `BUNDLE_PATH` env var to the location, perhaps:
+
+```
+/var/www/app/bundle
+```
 
 ### Template Helpers
 
@@ -292,9 +305,13 @@ It's you to render the raw CSS in your layout:
 
 ### Previewing and Sending
 
-Noticed the `route` property on the template? That's for showing your email in the browser. It uses Iron Router's server side routes under the hood.
+`lookback:emails` makes it easier to preview email designs in your browser. And you can even interface with you database collections in order to fill them emails with *real data*.
 
-It expects a `path` property (feel free to use any of Iron Router's fanciness in here) and an optional `data` function providing the data context (an object). The function has access to the same scope as Iron Router's `action` hook, which means you can get a hold of parameters and the whole shebang.
+It's also possible to *send* emails to yourself or others for review in a real mail client.
+
+Noticed the `route` property on the template? It uses Iron Router's server side routes under the hood.
+
+The `route` property expects a `path` property (feel free to use any of Iron Router's fanciness in here) and an optional `data` function providing the data context (an object). The function has access to the same scope as Iron Router's `action` hook, which means you can get a hold of parameters and the whole shebang.
 
 **Two routes** will be added:
 
@@ -303,9 +320,29 @@ It expects a `path` property (feel free to use any of Iron Router's fanciness in
 /emails/send/<routeName>
 ```
 
+The `/emails` root prefix is configurable in `config` in the `routePrefix` key.
+
+**Note:** Due to security concerns, previewing and sending emails through these routes are restrained to work in development mode only per default, i.e. if
+
+```
+process.NODE_ENV === 'development'
+```
+
+This is configurable with the `addRoutes` setting, when calling `config()`.
+
 The email template will compile, build SCSS, inline CSS, and render the resulting HTML for you on each refresh.
 
 The `send` route can take an optional `?to` query parameter which sets the receiving mail address, unless set in `Mailer.config()`.
+
+Summarized route configure sample:
+
+```coffeescript
+Mailer.config(
+  addRoutes: true                 # Always add routes, even in production.
+  routePrefix: 'newsletters'      # Will show '/newsletters/preview .. ' instead of '/emails/preview ..'.
+  testEmail: 'name@domain.com'    # Default receiving email for emails sent with the '/emails/send' route.
+)
+```
 
 ### Paths
 
@@ -358,6 +395,9 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.3.5` - Expose `addRoutes` setting. Enables manual control of adding preview and send routes.
+- `0.3.4` - *Skipped.*
+- `0.3.3` - Add `disabled` flag to settings, for completely disabling sending of actual emails.
 - `0.3.2` - Add Windows arch support for Meteor 1.1 RC
 - `0.3.1` - Don't expose `MailerClass`'s internal `init` method.
 - `0.3.0` - Initial publish.
