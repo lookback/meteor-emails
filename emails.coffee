@@ -15,12 +15,14 @@ TAG = 'mailer'
 # - `baseUrl` is what root domain to base relative paths from.
 # - `testEmail`, when testing emails, set this variable.
 # - `logger`, optionally inject an external logger. Defaults to `console`.
+# - `addRoutes`, should we add preview and send routes? Defaults to `true` in development.
 Mailer =
   settings:
     routePrefix: 'emails'
     baseUrl: process.env.ROOT_URL
     testEmail: null
     logger: console
+    addRoutes: process.env.NODE_ENV is 'development'
 
   config: (newSettings) ->
     @settings = _.extend(@settings, newSettings)
@@ -369,8 +371,8 @@ MailerClass = (options) ->
 
         compile template
 
-        # Only add these routes when in dev mode.
-        if template.route and process.env.NODE_ENV is 'development'
+        # Only add these routes when in dev mode or if forced.
+        if template.route and settings.addRoutes
           Routes.addPreview template
           Routes.addSend template
 
