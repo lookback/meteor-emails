@@ -22,7 +22,7 @@ iron:url@1.0.7
 jquery@1.11.3_2
 json@1.0.3
 logging@1.0.7
-lookback:emails@0.3.2
+lookback:emails@0.3.3
 meteor@1.1.6
 meteorhacks:ssr@2.1.2
 minifiers@1.1.5
