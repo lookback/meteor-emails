@@ -4,6 +4,7 @@ git stash && \
 git checkout gh-pages && \
 git rebase master && \
 rm -rf docs && \
+rm -rf example && \
 docco emails.coffee utils.coffee && \
 git add . && \
 git commit -a -m 'Generate documentation' && \
