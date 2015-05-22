@@ -319,20 +319,34 @@ The `route` property expects a `path` property (feel free to use any of Iron Rou
 /emails/preview/<routeName>
 /emails/send/<routeName>
 ```
-
 The `/emails` root prefix is configurable in `config` in the `routePrefix` key.
 
-**Note:** Due to security concerns, previewing and sending emails through these routes are restrained to work in development mode only per default, i.e. if
+The Iron Router *route names* will be on the format
+
+```
+[preview|send]Name
+```
+
+So for a template named `newsletterEmail`, the route names will be
+
+```
+previewNewsletterEmail
+sendNewsletterEmail
+```
+
+Note that the template name has a capitalized first character when generating the route name. This, along with the full path, will be logged in your app console at startup.
+
+**Note:** Due to security concerns, previewing and sending emails through these routes are restrained to work in development mode per default, i.e. if
 
 ```
 process.NODE_ENV === 'development'
 ```
 
-This is configurable with the `addRoutes` setting, when calling `config()`.
+This can be manually configured with the `addRoutes` boolean setting, when calling `Mailer.config()`.
 
 The email template will compile, build SCSS, inline CSS, and render the resulting HTML for you on each refresh.
 
-The `send` route can take an optional `?to` query parameter which sets the receiving mail address, unless set in `Mailer.config()`.
+The `send` route can take an optional `?to` URL query parameter which sets the receiving mail address, unless set in `Mailer.config()`.
 
 Summarized route configure sample:
 
