@@ -410,6 +410,11 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.4.0`
+  - Add support for rendering Jade templates with the Meteor SSR package.
+  - Don't append `Email` to the Iron Router route names.
+  - Capitalize template name in route names (`sample` becomes `previewSample`).
+  - Better logging when adding routes.
 - `0.3.5` - Expose `addRoutes` setting. Enables manual control of adding preview and send routes.
 - `0.3.4` - *Skipped.*
 - `0.3.3` - Add `disabled` flag to settings, for completely disabling sending of actual emails.
