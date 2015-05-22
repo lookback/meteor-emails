@@ -23,6 +23,9 @@ else
 # Export the object on `share`, since CoffeeScript.
 share.MailerUtils =
 
+  capitalizeFirstChar: (string) ->
+    string.charAt(0).toUpperCase() + string.slice(1)
+
   # Set up a logger to use through `MailerUtils.Logger`. Verify
   # that necessary methods exists on the injected `logger` and
   # fallback if not.

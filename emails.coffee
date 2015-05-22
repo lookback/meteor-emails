@@ -266,102 +266,103 @@ MailerClass = (options) ->
   # This package supports browser routes, so you can **preview**
   # and **send email designs** from the browser.
 
-  Routes =
+  # This function adds the `preview` route from a `template` object.
+  # It will apply the returned data from a `data` function on the
+  # provided `route` prop from the template.
+  previewAction = (template) ->
+    try
+      data = template.route.data and template.route.data.apply(this, arguments)
+    catch ex
+      msg = 'Exception in '+template.name+' data function: '+ex.message
+      Utils.Logger.error msg, TAG
+      @response.writeHead 500
+      return @response.end msg
 
-    # This function adds the `preview` route from a `template` object.
-    # It will apply the returned data from a `data` function on the
-    # provided `route` prop from the template.
-    addPreview: (template) ->
-      check template.name, String
-      check template.route,
-        path: String
-        data: Match.Optional Function
+    # Compile, since we wanna refresh markup and CSS inlining.
+    compile template
 
+    Utils.Logger.info "Rendering #{template.name} ...", TAG
+
+    try
+      html = render template.name, data
+      Utils.Logger.info "Rendering successful!", TAG
+    catch ex
+      msg = 'Could not preview email: ' + ex.message
+      Utils.Logger.error msg, TAG
+      html = msg
+
+    @response.writeHead 200, 'Content-Type': 'text/html'
+    @response.end(html, 'utf8')
+
+  # This function adds the `send` route, for easy sending emails from
+  # the browser.
+  sendAction = (template) ->
+    # Who to send to? It depends: it primarly reads from the `?to`
+    # query param, and secondly from the `testEmail` prop in settings.
+    to = @params.query.to or settings.testEmail
+
+    Utils.Logger.info "Sending #{template.name} ...", TAG
+
+    if to?
+      try
+        data = template.route.data and template.route.data.apply(this, arguments)
+      catch ex
+        Utils.Logger.error 'Exception in '+template.name+' data function: '+ex.message, TAG
+        return
+
+      res = sendEmail(
+        to: to
+        data: data
+        template: template.name
+        subject: '[TEST] ' + template.name
+      )
+
+      if res is false
+        @response.writeHead 500
+        msg = 'Did not send test email, something went wrong. Check the logs.'
+      else
+        @response.writeHead 200
+        # If there's no `MAIL_URL` environment variable, Meteor cannot send
+        # the email and echoes it out to `STDOUT` instead.
+        reallySentEmail = !!process.env.MAIL_URL
+        msg = if reallySentEmail then "Sent test email to #{to}" else "Sent email to STDOUT"
+
+      @response.end(msg)
+
+    else
+      @response.writeHead 400
+      @response.end("No testEmail provided.")
+
+  # Adds all the routes from a template.
+  addRoutes = (template) ->
+    check template.name, String
+    check template.route.path, String
+
+    types =
+      preview: previewAction
+      send: sendAction
+
+    _.each types, (action, type) ->
       # Typically `/emails/preview/myEmailTemplate`.
-      path = settings.routePrefix + '/preview' + template.route.path
+      # Do some formatting. The `path` should be the prefix, followed by
+      # the type (`preview` or `send`). So it could look like
+      # 
+      #    /emails/preview/sampleTemplate/:param
+      # 
+      # Also capitalize the first character in the template name for
+      # the name of the route.
+      path = "#{settings.routePrefix}/#{type}" + template.route.path
+      name = Utils.capitalizeFirstChar(template.name)
+      routeName = "#{type}#{name}Email"
+      
+      Utils.Logger.info "Add route: [#{routeName}] at path /" + path, TAG
 
-      Utils.Logger.info 'Adding route: /' + path, TAG
-
-      Router.route "preview#{template.name}Email",
+      Router.route routeName,
         path: path
         where: 'server'
-        action: ->
-
-          try
-            data = template.route.data and template.route.data.apply(this, arguments)
-          catch ex
-            msg = 'Exception in '+template.name+' data function: '+ex.message
-            Utils.Logger.error msg, TAG
-            @response.writeHead 500
-            return @response.end msg
-
-          # Compile, since we wanna refresh markup and CSS inlining.
-          compile template
-
-          Utils.Logger.info "Rendering #{template.name} ...", TAG
-
-          try
-            html = render template.name, data
-            Utils.Logger.info "Rendering successful!", TAG
-          catch ex
-            msg = 'Could not preview email: ' + ex.message
-            Utils.Logger.error msg, TAG
-            html = msg
-
-          @response.writeHead 200, 'Content-Type': 'text/html'
-          @response.end(html, 'utf8')
-
-    # This function adds the `send` route, for easy sending emails from
-    # the browser.
-    addSend: (template) ->
-      check template.name, String
-      check template.route,
-        path: String
-        data: Match.Optional Function
-
-      path = settings.routePrefix + '/send' + template.route.path
-
-      Utils.Logger.info 'Adding route /' + path, TAG
-
-      Router.route "send#{template.name}Email",
-        path: path
-        where: 'server'
-        action: ->
-          # Who to send to? It depends: it primarly reads from the `?to`
-          # query param, and secondly from the `testEmail` prop in settings.
-          to = @params.query.to or settings.testEmail
-
-          Utils.Logger.info "Sending #{template.name} ...", TAG
-
-          if to?
-            try
-              data = template.route.data and template.route.data.apply(this, arguments)
-            catch ex
-              Utils.Logger.error 'Exception in '+template.name+' data function: '+ex.message, TAG
-              return
-
-            res = sendEmail(
-              to: to
-              data: data
-              template: template.name
-              subject: '[TEST] ' + template.name
-            )
-
-            if res is false
-              @response.writeHead 500
-              msg = 'Did not send test email, something went wrong. Check the logs.'
-            else
-              @response.writeHead 200
-              # If there's no `MAIL_URL` environment variable, Meteor cannot send
-              # the email and echoes it out to `STDOUT` instead.
-              reallySentEmail = !!process.env.MAIL_URL
-              msg = if reallySentEmail then "Sent test email to #{to}" else "Sent email to STDOUT"
-
-            @response.end(msg)
-
-          else
-            @response.writeHead 400
-            @response.end("No testEmail provided.")
+        # An action still need the route context, but call it
+        # with our `template` as the sole parameter.
+        action: -> action.call(this, template)
 
   # ## Init
   #
@@ -376,8 +377,7 @@ MailerClass = (options) ->
 
         # Only add these routes when in dev mode or if forced.
         if template.route and settings.addRoutes
-          Routes.addPreview template
-          Routes.addSend template
+          addRoutes(template)
 
   init()
 
