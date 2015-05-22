@@ -350,10 +350,11 @@ MailerClass = (options) ->
       #    /emails/preview/sampleTemplate/:param
       # 
       # Also capitalize the first character in the template name for
-      # the name of the route.
+      # the name of the route, so it will look like `previewSample` for a 
+      # template named `sample`.
       path = "#{settings.routePrefix}/#{type}" + template.route.path
       name = Utils.capitalizeFirstChar(template.name)
-      routeName = "#{type}#{name}Email"
+      routeName = "#{type}#{name}"
       
       Utils.Logger.info "Add route: [#{routeName}] at path /" + path, TAG
 
