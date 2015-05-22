@@ -53,6 +53,7 @@ Please inspect the provided sample code for details.
     testEmail: null,                    // Default address to send test emails to.
     logger: console                     // Injected logger (see further below)
     addRoutes: process.env.NODE_ENV === 'development' // Add routes for previewing and sending emails. Defaults to `true` in development.
+    language: 'html'                    // The template language to use. Defaults to 'html', but can be anything Meteor SSR supports (like Jade, for instance).
   }
     ```
 

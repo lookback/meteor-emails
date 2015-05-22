@@ -25,6 +25,7 @@ Mailer =
     logger: console
     disabled: false
     addRoutes: process.env.NODE_ENV is 'development'
+    language: 'html'
 
   config: (newSettings) ->
     @settings = _.extend(@settings, newSettings)
@@ -153,14 +154,14 @@ MailerClass = (options) ->
       if template.scss
         layoutContent = addCSS Utils.toCSS(template.scss), layoutContent
 
-      SSR.compileTemplate(layout.name, layoutContent)
+      SSR.compileTemplate(layout.name, layoutContent, language: settings.language)
       addHelpers layout
 
 
     # This will place the template function in
     #
     #     Template.<template.name>
-    tmpl = SSR.compileTemplate(template.name, content)
+    tmpl = SSR.compileTemplate(template.name, content, language: settings.language)
 
     # Save the layout name on the template object for later.
     if layout?
