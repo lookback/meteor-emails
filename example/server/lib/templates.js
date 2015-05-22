@@ -1,6 +1,6 @@
 Templates = {};
 
-Templates.sampleMail = {
+Templates.sample = {
   path: 'sample-email/template.html',    // Relative to the 'private' dir.
   scss: 'sample-email/style.scss',       // Mail specific SCSS.
 
