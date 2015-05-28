@@ -52,6 +52,7 @@ Please inspect the provided sample code for details.
     baseUrl: process.env.ROOT_URL,      // The base domain to build absolute link URLs from in the emails.
     testEmail: null,                    // Default address to send test emails to.
     logger: console                     // Injected logger (see further below)
+    silent: false,                      // If set to `true`, any `Logger.info` calls won't be shown in the console to reduce clutter.
     addRoutes: process.env.NODE_ENV === 'development' // Add routes for previewing and sending emails. Defaults to `true` in development.
     language: 'html'                    // The template language to use. Defaults to 'html', but can be anything Meteor SSR supports (like Jade, for instance).
   }
@@ -410,6 +411,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.4.1` - Add `silent` option to `Mailer.config()`. If set to `true`, any `Logger.info` calls won't be shown in the console to reduce clutter.
 - `0.4.0`
   - Add support for rendering Jade templates with the Meteor SSR package.
   - Don't append `Email` to the Iron Router route names.
