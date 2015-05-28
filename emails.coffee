@@ -19,6 +19,7 @@ TAG = 'mailer'
 # - `addRoutes`, should we add preview and send routes? Defaults to `true` in development.
 Mailer =
   settings:
+    silent: false
     routePrefix: 'emails'
     baseUrl: process.env.ROOT_URL
     testEmail: null
@@ -79,7 +80,7 @@ MailerClass = (options) ->
   settings = _.extend({}, Mailer.settings, options.settings)
   globalHelpers = _.extend({}, Helpers, Blaze._globalHelpers, options.helpers)
 
-  Utils.setupLogger(settings.logger)
+  Utils.setupLogger(settings.logger, suppressInfo: settings.silent)
 
   addHelpers = (template) ->
     check template.name, String

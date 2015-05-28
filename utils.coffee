@@ -29,7 +29,12 @@ share.MailerUtils =
   # Set up a logger to use through `MailerUtils.Logger`. Verify
   # that necessary methods exists on the injected `logger` and
   # fallback if not.
-  setupLogger: (logger) ->
+  setupLogger: (logger, opts) ->
+    defaults =
+      suppressInfo: false
+
+    opts = _.extend({}, defaults, opts)
+
     res = ['info', 'warn', 'error'].map (method) ->
       if not method in logger
         console.warn "The injected logger does not support the #{method} method."
@@ -41,6 +46,11 @@ share.MailerUtils =
       @Logger = console
     else
       @Logger = logger
+
+    # Just do a noop for the `info` method
+    # if we're in silent mode.
+    if opts.suppressInfo is true
+      @Logger.info = -> #noop
 
   joinUrl: (base, path) ->
     # Remove any trailing slashes.
