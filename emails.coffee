@@ -237,6 +237,7 @@ MailerClass = (options) ->
       replyTo: Match.Optional String
       from: Match.Optional String
       data: Match.Optional Object
+      headers: Match.Optional Object
 
     defaults =
       from: settings.from
