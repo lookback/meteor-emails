@@ -14,8 +14,12 @@ sass = Npm.require 'node-sass'
 #
 # When deployed, set the BUNDLE_PATH env var to the location, perhaps:
 #     /var/www/app/bundle
+# For Modulus, you need to use the APP_DIR variable, which you do NOT need to set
+
 if process.env.BUNDLE_PATH
   ROOT = path.join(process.env.BUNDLE_PATH, 'programs', 'server', 'assets', 'app')
+else if process.env.APP_DIR
+   ROOT = path.join(process.env.APP_DIR, 'programs','server', 'assets', 'app')
 else
 # In development, using PWD is fine.
   ROOT = path.join(process.env.PWD, 'private')
