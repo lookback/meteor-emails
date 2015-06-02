@@ -177,10 +177,12 @@ Simple as a pie!
 
 This package assumes that assets (templates, SCSS, CSS ..) are stored in the `private` directory. Thanks to that, Meteor won't touch the HTML and CSS, which are non-JS files. Unfortunately, Meteor packages can't access content in `private` with the `Assets.getText()` method, so we need the *absolute path* to the template directory.
 
-However, file paths are screwed up when bundling and deploying Meteor apps. Therefore, when running a deployed instance, **one of the following variables must return the absolute path to the bundle...**
+However, file paths are screwed up when bundling and deploying Meteor apps. Therefore, when running a deployed instance, **one of the following variables must return the absolute path to the bundle:**
 
-1. For traditional hosts, manually set the `BUNDLE_PATH` environment variable. example: `/var/www/app/bundle`
-2. For deployments on hosts with ephemeral file systems like Modulus, the `process.env.APP_DIR` variable should be provided by host
+1. For traditional hosts, manually set the `BUNDLE_PATH` environment variable. For instance `/var/www/app/bundle`.
+2. For deployments on hosts with ephemeral file systems like Modulus, the `APP_DIR` environment variable should be provided by host. In that case, `APP_DIR` is used instead.
+
+In development, neither of `BUNDLE_PATH` and `APP_DIR` are needed.
 
 ### Template Helpers
 
