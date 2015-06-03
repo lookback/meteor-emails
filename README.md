@@ -173,17 +173,16 @@ Mailer.send(
 
 Simple as a pie!
 
-#### Important note regarding template paths
-
-**tldr;** Set the `BUNDLE_PATH` environment variable to the absolute path to your Meteor app bundle directory.
+### Template paths on deployed instances
 
 This package assumes that assets (templates, SCSS, CSS ..) are stored in the `private` directory. Thanks to that, Meteor won't touch the HTML and CSS, which are non-JS files. Unfortunately, Meteor packages can't access content in `private` with the `Assets.getText()` method, so we need the *absolute path* to the template directory.
 
-However, since the file paths are screwed up when bundling and deploying Meteor apps, we need to set the `BUNDLE_PATH` env var to keep track of where the bundle lives. When deployed, set the `BUNDLE_PATH` env var to the location, perhaps:
+However, file paths are screwed up when bundling and deploying Meteor apps. Therefore, when running a deployed instance, **one of the following variables must return the absolute path to the bundle:**
 
-```
-/var/www/app/bundle
-```
+1. For traditional hosts, manually set the `BUNDLE_PATH` environment variable. For instance `/var/www/app/bundle`.
+2. For deployments on hosts with ephemeral file systems like Modulus, the `APP_DIR` environment variable should be provided by host. In that case, `APP_DIR` is used instead.
+
+In development, neither of `BUNDLE_PATH` and `APP_DIR` are needed.
 
 ### Template Helpers
 
