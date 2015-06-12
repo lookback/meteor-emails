@@ -1,12 +1,12 @@
 # Meteor Emails
 
-`lookback:emails` is a Meteor package that makes it easier building, testing and debugging rich HTML emails.
+`lookback:emails` is a Meteor package that makes it easier to build, test and debug rich HTML emails.
 
 Usually, building HTML emails yourself is tedious. On top of that, add the need for data integration and thus a template language (for sending out daily digest emails, for instance). We wanted a way to preview the email in the browser *with real data* in order to quickly iterate on the design, instead of alternating between code editor and email client.
 
 ## Features
 
-- **Server side rendering** with the [Meteor SSR](https://github.com/meteorhacks/meteor-ssr/) package. Use Blaze features and helpers like on the frontend.
+- **Server side rendering** with the [Meteor SSR](https://github.com/meteorhacks/meteor-ssr/) package. Use Blaze features and helpers like on the client.
 - **CSS inlining** with [Juice](http://npmjs.org/package/juice). No extra build step.
 - **Preview and debug** emails in development mode in your browser when developing.
 - **Layouts** for re-using markup.
