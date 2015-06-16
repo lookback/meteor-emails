@@ -8,7 +8,7 @@ Package.describe({
 });
 
 Npm.depends({
-  'node-sass': '2.0.0',
+  'node-sass': '3.2.0',
   'juice': '1.0.0'
 });
 

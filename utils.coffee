@@ -78,9 +78,7 @@ share.MailerUtils =
     file = path.join(ROOT, scss)
 
     try
-      return sass.renderSync(file: file, sourceMap: false).css
+      return sass.renderSync(file: file, sourceMap: false).css.toString()
     catch ex
-      # `ex` is somehow a JSON string.
-      e = JSON.parse(ex)
-      console.error 'Sass failed to compile: ' + e.message
-      console.error 'In ' + (e.file or scss)
+      console.error 'Sass failed to compile: ' + ex.message
+      console.error "In #{ex.file or scss} at line #{ex.line}, column #{ex.column}"
