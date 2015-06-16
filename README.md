@@ -410,6 +410,9 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.4.2`
+  - Update `node-sass` to 3.2.0.
+  - Fix issue with using `layout: false` (from [#11](https://github.com/lookback/meteor-emails/issues/11)).
 - `0.4.1` - Add `silent` option to `Mailer.config()`. If set to `true`, any `Logger.info` calls won't be shown in the console to reduce clutter.
 - `0.4.0`
   - Add support for rendering Jade templates with the Meteor SSR package.
