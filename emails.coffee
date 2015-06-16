@@ -74,7 +74,7 @@ MailerClass = (options) ->
     # Take optional template helpers.
     helpers: Match.Optional Object
     # Take an optional layoute template object.
-    layout: Match.Optional Object
+    layout: Match.Optional Match.OneOf(Object, Boolean)
   )
 
   settings = _.extend({}, Mailer.settings, options.settings)
@@ -137,7 +137,7 @@ MailerClass = (options) ->
     if template.scss
       content = addCSS Utils.toCSS(template.scss), content
 
-    if options.layout? and template.layout isnt false
+    if options.layout and template.layout isnt false
       layout = options.layout
       layoutContent = Utils.readFile(layout.path)
 
