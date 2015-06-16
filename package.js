@@ -8,12 +8,13 @@ Package.describe({
 });
 
 Npm.depends({
-  'node-sass': '2.0.0',
+  'node-sass': '3.2.0',
   'juice': '1.0.0'
 });
 
 Package.onUse(function(api) {
-  api.versionsFrom('0.9.3');
+
+  api.versionsFrom('1.0.4');
 
   api.use([
     'check',
