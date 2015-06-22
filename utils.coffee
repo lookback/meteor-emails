@@ -2,7 +2,6 @@
 
 fs = Npm.require 'fs'
 path = Npm.require 'path'
-sass = Npm.require 'node-sass'
 
 # This package assumes that assets (templates, SCSS, CSS ..) are
 # stored in the `private` directory. Thanks to that, Meteor won't
