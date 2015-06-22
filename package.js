@@ -7,11 +7,6 @@ Package.describe({
   git: 'https://github.com/lookback/meteor-emails.git'
 });
 
-Npm.depends({
-  'node-sass': '3.2.0',
-  'juice': '1.0.0'
-});
-
 Package.onUse(function(api) {
 
   api.versionsFrom('1.0.4');
@@ -21,6 +16,8 @@ Package.onUse(function(api) {
     'underscore',
     'coffeescript',
     'email',
+    'sacha:juice',
+    'chrisbutler:node-sass',
     'iron:router@1.0.7',
     'meteorhacks:ssr@2.1.2'
   ], where);
