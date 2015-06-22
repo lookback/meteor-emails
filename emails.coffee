@@ -98,18 +98,20 @@ MailerClass = (options) ->
   # in the Template namespace.
   #
   # A `template` must have a path to a template HTML file, and
-  # can optionally have paths to any SCSS and CSS stylesheets.
+  # can optionally have paths to any SCSS or CSS stylesheets, and 
+  # be issued from a package
   compile = (template) ->
     check template, Match.ObjectIncluding(
       path: String
       name: String
       scss: Match.Optional String
       css: Match.Optional String
+      packageName: Match.Optional String
     )
 
     # Read the template as a string.
     try
-      content = Utils.readFile template.path
+      content = Utils.readFile template.path, template.packageName
     catch ex
       Utils.Logger.error 'Could not read template file: '+template.path, TAG
       return false
@@ -135,7 +137,7 @@ MailerClass = (options) ->
 
     # .. and compile and inline any SCSS file paths.
     if template.scss
-      content = addCSS Utils.toCSS(template.scss), content
+      content = addCSS Utils.toCSS(template.scss, template.packageName), content
 
     if options.layout? and template.layout isnt false
       layout = options.layout
@@ -146,14 +148,14 @@ MailerClass = (options) ->
         content = addCSS Utils.readFile(layout.css), content
 
       if layout.scss
-        layoutContent = addCSS Utils.toCSS(layout.scss), layoutContent
-        content = addCSS Utils.toCSS(layout.scss), content
+        layoutContent = addCSS Utils.toCSS(layout.scss, template.packageName), layoutContent
+        content = addCSS Utils.toCSS(layout.scss, template.packageName), content
 
       if template.css
         layoutContent = addCSS Utils.readFile(template.css), layoutContent
 
       if template.scss
-        layoutContent = addCSS Utils.toCSS(template.scss), layoutContent
+        layoutContent = addCSS Utils.toCSS(template.scss, template.packageName), layoutContent
 
       SSR.compileTemplate(layout.name, layoutContent, language: settings.language)
       addHelpers layout
