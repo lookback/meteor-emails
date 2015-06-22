@@ -1,7 +1,5 @@
 # Meteor Emails
 
-**Important**. Please use version 0.4.0, as 0.4.1-0.4.2 have issues with building `node-sass` on the MDG OS X build machine (see https://github.com/lookback/meteor-emails/issues/23).
-
 `lookback:emails` is a Meteor package that makes it easier to build, test and debug rich HTML emails.
 
 Usually, building HTML emails yourself is tedious. On top of that, add the need for data integration and thus a template language (for sending out daily digest emails, for instance). We wanted a way to preview the email in the browser *with real data* in order to quickly iterate on the design, instead of alternating between code editor and email client.
@@ -412,6 +410,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.4.3` - Fix build issues by using externally packaged `node-sass` for Meteor.
 - `0.4.2`
   - Update `node-sass` to 3.2.0.
   - Fix issue with using `layout: false` (from [#11](https://github.com/lookback/meteor-emails/issues/11)).
