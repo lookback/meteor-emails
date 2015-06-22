@@ -16,8 +16,8 @@ Package.onUse(function(api) {
     'underscore',
     'coffeescript',
     'email',
-    'sacha:juice',
-    'chrisbutler:node-sass',
+    'sacha:juice@0.1.3',
+    'chrisbutler:node-sass@3.2.0',
     'iron:router@1.0.7',
     'meteorhacks:ssr@2.1.2'
   ], where);

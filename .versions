@@ -3,6 +3,7 @@ blaze@2.1.2
 blaze-tools@1.0.3
 boilerplate-generator@1.0.3
 check@1.0.5
+chrisbutler:node-sass@3.2.0
 coffeescript@1.0.6
 deps@1.0.7
 ejson@1.0.6
@@ -22,7 +23,7 @@ iron:url@1.0.7
 jquery@1.11.3_2
 json@1.0.3
 logging@1.0.7
-lookback:emails@0.4.2
+lookback:emails@0.4.3
 meteor@1.1.6
 meteorhacks:ssr@2.1.2
 minifiers@1.1.5
@@ -33,6 +34,7 @@ random@1.0.3
 reactive-dict@1.1.0
 reactive-var@1.0.5
 routepolicy@1.0.5
+sacha:juice@0.1.4
 spacebars@1.0.6
 spacebars-compiler@1.0.6
 templating@1.1.1
