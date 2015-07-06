@@ -33,8 +33,6 @@ Mailer =
 
 # ## Deps
 #
-# Use `juice` for inlining CSS into the templates.
-juice = Npm.require 'juice'
 Utils = share.MailerUtils
 
 # ## Template helpers
@@ -74,7 +72,7 @@ MailerClass = (options) ->
     # Take optional template helpers.
     helpers: Match.Optional Object
     # Take an optional layoute template object.
-    layout: Match.Optional Object
+    layout: Match.Optional Match.OneOf(Object, Boolean)
   )
 
   settings = _.extend({}, Mailer.settings, options.settings)
@@ -139,7 +137,7 @@ MailerClass = (options) ->
     if template.scss
       content = addCSS Utils.toCSS(template.scss, template.packageName), content
 
-    if options.layout? and template.layout isnt false
+    if options.layout and template.layout isnt false
       layout = options.layout
       layoutContent = Utils.readFile(layout.path)
 
@@ -351,16 +349,16 @@ MailerClass = (options) ->
       # Typically `/emails/preview/myEmailTemplate`.
       # Do some formatting. The `path` should be the prefix, followed by
       # the type (`preview` or `send`). So it could look like
-      # 
+      #
       #    /emails/preview/sampleTemplate/:param
-      # 
+      #
       # Also capitalize the first character in the template name for
-      # the name of the route, so it will look like `previewSample` for a 
+      # the name of the route, so it will look like `previewSample` for a
       # template named `sample`.
       path = "#{settings.routePrefix}/#{type}" + template.route.path
       name = Utils.capitalizeFirstChar(template.name)
       routeName = "#{type}#{name}"
-      
+
       Utils.Logger.info "Add route: [#{routeName}] at path /" + path, TAG
 
       Router.route routeName,
