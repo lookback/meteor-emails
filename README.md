@@ -410,6 +410,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.4.4` - Fix not using local template `layout` option.
 - `0.4.3` - Fix build issues by using externally packaged `node-sass` for Meteor.
 - `0.4.2`
   - Update `node-sass` to 3.2.0.
