@@ -103,6 +103,12 @@ MailerClass = (options) ->
       name: String
       scss: Match.Optional String
       css: Match.Optional String
+      layout: Match.Optional Match.OneOf(Boolean,
+        name: String
+        path: String
+        scss: Match.Optional String
+        css: Match.Optional String
+      )
     )
 
     # Read the template as a string.
@@ -136,7 +142,7 @@ MailerClass = (options) ->
       content = addCSS Utils.toCSS(template.scss), content
 
     if options.layout and template.layout isnt false
-      layout = options.layout
+      layout = template.layout or options.layout
       layoutContent = Utils.readFile(layout.path)
 
       if layout.css
