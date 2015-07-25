@@ -410,6 +410,9 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.4.5`
+  - CSS and SCSS is now compiled and inlined at runtime, in order to inline CSS for the rendered content. If CSS only was inlined at compile time, the dynamic content wouldn't get any styling.
+  - Because of the above, we received a small performance boost due to removal of excessive SCSS inlining and inlining.
 - `0.4.4` - Fix not using local template `layout` option.
 - `0.4.3` - Fix build issues by using externally packaged `node-sass` for Meteor.
 - `0.4.2`
