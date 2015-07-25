@@ -3,6 +3,8 @@
 fs = Npm.require 'fs'
 path = Npm.require 'path'
 
+TAG = 'mailer-utils'
+
 # This package assumes that assets (templates, SCSS, CSS ..) are
 # stored in the `private` directory. Thanks to that, Meteor won't
 # touch the HTML and CSS, which are non-JS files.
@@ -23,8 +25,7 @@ else
 # In development, using PWD is fine.
   ROOT = path.join(process.env.PWD, 'private')
 
-# Export the object on `share`, since CoffeeScript.
-share.MailerUtils =
+Utils =
 
   capitalizeFirstChar: (string) ->
     string.charAt(0).toUpperCase() + string.slice(1)
@@ -65,6 +66,28 @@ share.MailerUtils =
 
     return base + path
 
+  addStylesheets: (template, html, juiceOpts = {}) ->
+    check template, Match.ObjectIncluding(
+      name: String
+      css: Match.Optional(String)
+      scss: Match.Optional(String)
+    )
+
+    try
+      content = html
+
+      if template.css
+        css = Utils.readFile(template.css)
+        content = juice.inlineContent(content, css, juiceOpts)
+      if template.scss
+        scss = Utils.toCSS(template.scss)
+        content = juice.inlineContent(content, scss, juiceOpts)
+
+      return content
+    catch ex
+      Utils.Logger.error "Could not add CSS to #{template.name}: #{ex.message}", TAG
+      return html
+
   addDoctype: (html) ->
     '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n' + html
 
@@ -85,3 +108,6 @@ share.MailerUtils =
     catch ex
       console.error 'Sass failed to compile: ' + ex.message
       console.error "In #{ex.file or scss} at line #{ex.line}, column #{ex.column}"
+
+# Export the object on `share`, since CoffeeScript.
+share.MailerUtils = Utils
