@@ -28,6 +28,12 @@ Mailer =
     addRoutes: process.env.NODE_ENV is 'development'
     language: 'html'
 
+    juiceOpts:
+      preserveMediaQueries: true
+      removeStyleTags: true
+      webResources:
+        images: false
+
   config: (newSettings) ->
     @settings = _.extend(@settings, newSettings)
 
@@ -118,46 +124,10 @@ MailerClass = (options) ->
       Utils.Logger.error 'Could not read template file: '+template.path, TAG
       return false
 
-    juiceOpts =
-      preserveMediaQueries: true
-      removeStyleTags: true
-      webResources:
-        images: false
+    layout = template.layout or options.layout
 
-    addCSS = (css, html) ->
-      return html if not css
-
-      try
-        return juice.inlineContent(html, css, juiceOpts)
-      catch ex
-        Utils.Logger.error 'Could not add CSS to '+template.name+': ' + ex.message, TAG
-        return html
-
-    # .. then any attached CSS file paths.
-    if template.css
-      content = addCSS Utils.readFile(template.css), content
-
-    # .. and compile and inline any SCSS file paths.
-    if template.scss
-      content = addCSS Utils.toCSS(template.scss), content
-
-    if options.layout and template.layout isnt false
-      layout = template.layout or options.layout
+    if layout and template.layout isnt false
       layoutContent = Utils.readFile(layout.path)
-
-      if layout.css
-        layoutContent = addCSS Utils.readFile(layout.css), layoutContent
-        content = addCSS Utils.readFile(layout.css), content
-
-      if layout.scss
-        layoutContent = addCSS Utils.toCSS(layout.scss), layoutContent
-        content = addCSS Utils.toCSS(layout.scss), content
-
-      if template.css
-        layoutContent = addCSS Utils.readFile(template.css), layoutContent
-
-      if template.scss
-        layoutContent = addCSS Utils.toCSS(template.scss), layoutContent
 
       SSR.compileTemplate(layout.name, layoutContent, language: settings.language)
       addHelpers layout
@@ -167,10 +137,6 @@ MailerClass = (options) ->
     #
     #     Template.<template.name>
     tmpl = SSR.compileTemplate(template.name, content, language: settings.language)
-
-    # Save the layout name on the template object for later.
-    if layout?
-      tmpl.__layout = layout.name
 
     # Add helpers to template.
     addHelpers template
@@ -187,7 +153,7 @@ MailerClass = (options) ->
 
     template = _.findWhere(options.templates, name: templateName)
 
-    if not Template[templateName]
+    if !templateName of Template
       compile template
 
     tmpl = Template[templateName]
@@ -196,10 +162,9 @@ MailerClass = (options) ->
       throw new Meteor.Error 500, 'Could not find template: '+templateName
 
     rendered = SSR.render tmpl, data
+    layout = template.layout or options.layout
 
-    if tmpl.__layout?
-      layout = tmpl.__layout
-
+    if layout and template.layout isnt false
       # When applying to a layout, some info from the template
       # (like the first preview lines) needs to be applied to the
       # layout scope as well.
@@ -225,9 +190,16 @@ MailerClass = (options) ->
         preview: preview
       )
 
-      rendered = SSR.render layout, layoutData
+      rendered = SSR.render layout.name, layoutData
+      rendered = Utils.addStylesheets(template, rendered, settings.juiceOpts)
+      rendered = Utils.addStylesheets(layout, rendered, settings.juiceOpts)
 
-    Utils.addDoctype rendered
+    else
+      rendered = Utils.addStylesheets(template, rendered, settings.juiceOpts)
+
+    rendered = Utils.addDoctype rendered
+
+    return rendered
 
   # ## Send
   #
