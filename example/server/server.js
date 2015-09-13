@@ -1,6 +1,6 @@
 Mailer.config({
-  from: 'John Doe <from@domain.com',
-  replyTo: 'John Doe <from@domain.com'
+  from: 'John Doe <from@domain.com>',
+  replyTo: 'John Doe <from@domain.com>'
 });
 
 Meteor.startup(function() {
