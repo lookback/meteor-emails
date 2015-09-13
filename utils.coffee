@@ -27,8 +27,6 @@ else
   realPath = process.cwd().replace(/(\.meteor.*)/g, '')
   ROOT = path.join(realPath, 'private')
 
-console.log ROOT
-
 Utils =
 
   capitalizeFirstChar: (string) ->
