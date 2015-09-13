@@ -22,8 +22,10 @@ if process.env.BUNDLE_PATH
 else if process.env.APP_DIR
    ROOT = path.join(process.env.APP_DIR, 'programs','server', 'assets', 'app')
 else
-# In development, using PWD is fine.
-  ROOT = path.join(process.env.PWD, 'private')
+
+  # In development, using pwd is fine. Remove the .meteor/foo/bar stuff though.
+  realPath = process.cwd().replace(/(\.meteor.*)/g, '')
+  ROOT = path.join(realPath, 'private')
 
 Utils =
 
