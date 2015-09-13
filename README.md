@@ -419,6 +419,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.5.0` - Remove `node-sass` as hard dependency. SCSS support is now opt-in, by adding `chrisbutler:node-sass` to your app.
 - `0.4.6` - Fix paths on Windows in development mode.
 - `0.4.5`
   - CSS and SCSS is now compiled and inlined at runtime, in order to inline CSS for the rendered content. If CSS only was inlined at compile time, the dynamic content wouldn't get any styling.
