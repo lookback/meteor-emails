@@ -11,13 +11,14 @@ Package.onUse(function(api) {
 
   api.versionsFrom('1.0.4');
 
+  api.use('chrisbutler:node-sass@3.2.0', where, { weak: true });
+
   api.use([
     'check',
     'underscore',
     'coffeescript',
     'email',
     'sacha:juice@0.1.3',
-    'chrisbutler:node-sass@3.2.0',
     'iron:router@1.0.7',
     'meteorhacks:ssr@2.1.2'
   ], where);

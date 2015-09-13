@@ -103,7 +103,13 @@ Utils =
 
   # Take a path to a SCSS file and compiles it to CSS with `node-sass`.
   toCSS: (scss) ->
+    if !Package['chrisbutler:node-sass']
+      Utils.Logger.warn 'Sass support is opt-in since lookback:emails@0.5.0. Please add chrisbutler:node-sass from Atmosphere and try again.', TAG
+      # Return file contents.
+      return Utils.readFile(scss)
+
     file = path.join(ROOT, scss)
+    sass = Package['chrisbutler:node-sass'].sass
 
     try
       return sass.renderSync(file: file, sourceMap: false).css.toString()
