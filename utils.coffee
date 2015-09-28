@@ -17,15 +17,24 @@ TAG = 'mailer-utils'
 #     /var/www/app/bundle
 # For Modulus, you need to use the APP_DIR variable, which you do NOT need to set
 
-if process.env.BUNDLE_PATH
-  ROOT = path.join(process.env.BUNDLE_PATH, 'programs', 'server', 'assets', 'app')
-else if process.env.APP_DIR
-   ROOT = path.join(process.env.APP_DIR, 'programs','server', 'assets', 'app')
-else
+isDevEnv = ->
+  process.env.NODE_ENV == 'development'
 
+developmentPrivateDir = ->
+  return unless isDevEnv()
   # In development, using pwd is fine. Remove the .meteor/foo/bar stuff though.
-  realPath = process.cwd().replace(/(\.meteor.*)/g, '')
-  ROOT = path.join(realPath, 'private')
+  meteor_root = process.cwd().replace(/(\.meteor.*)/g, '')
+  path.join(meteor_root, 'private')
+
+productionPrivateDir = ->
+  return if isDevEnv()
+  meteor_root = fs.realpathSync( process.cwd() + '/../' )
+  fs.realpathSync( meteor_root + '/../' )
+
+privateDir = process.env.BUNDLE_PATH || process.env.APP_DIR || productionPrivateDir()
+ROOT       = privateDir && path.join(privateDir, 'programs', 'server', 'assets', 'app')
+ROOT     ||= developmentPrivateDir()
+
 
 Utils =
 
