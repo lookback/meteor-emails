@@ -8,6 +8,7 @@ Usually, building HTML emails yourself is tedious. On top of that, add the need 
 
 - **Server side rendering** with the [Meteor SSR](https://github.com/meteorhacks/meteor-ssr/) package. Use Blaze features and helpers like on the client.
 - **CSS inlining** with [Juice](http://npmjs.org/package/juice). No extra build step.
+- **SCSS support** using `node-sass` (opt-in).
 - **Preview and debug** emails in development mode in your browser when developing.
 - **Layouts** for re-using markup.
 
@@ -24,6 +25,14 @@ meteor add lookback:emails
 [Annotated source](http://lookback.github.io/meteor-emails/docs/emails.html)
 
 A `Mailer` global will exported on the *server*.
+
+**Notice.** If you want SCSS support, be sure to add the `[meteor-node-sass](https://github.com/chrisbutler/meteor-node-sass)` package to your app:
+
+```
+meteor add chrisbutler:node-sass
+```
+
+`lookback:emails` will automatically detect `node-sass` being available, and will be able to compile `.scss` files.
 
 ## Sample app
 
@@ -410,6 +419,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.5.0` - Remove `node-sass` as hard dependency. SCSS support is now opt-in, by adding `chrisbutler:node-sass` to your app.
 - `0.4.6` - Fix paths on Windows in development mode.
 - `0.4.5`
   - CSS and SCSS is now compiled and inlined at runtime, in order to inline CSS for the rendered content. If CSS only was inlined at compile time, the dynamic content wouldn't get any styling.

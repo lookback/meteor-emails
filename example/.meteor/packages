@@ -8,3 +8,4 @@ meteor-platform
 autopublish
 insecure
 lookback:emails
+chrisbutler:node-sass@3.2.0
