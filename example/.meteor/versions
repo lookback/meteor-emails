@@ -33,7 +33,7 @@ json@1.0.3
 launch-screen@1.0.2
 livedata@1.0.13
 logging@1.0.7
-lookback:emails@0.5.0
+lookback:emails@0.5.1
 meteor@1.1.6
 meteor-platform@1.2.2
 meteorhacks:ssr@2.1.2
