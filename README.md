@@ -186,7 +186,7 @@ Simple as a pie!
 
 This package assumes that assets (templates, SCSS, CSS ..) are stored in the `private` directory. Thanks to that, Meteor won't touch the HTML and CSS, which are non-JS files. Unfortunately, Meteor packages can't access content in `private` with the `Assets.getText()` method, so we need the *absolute path* to the template directory.
 
-However, file paths are screwed up when bundling and deploying Meteor apps. Therefore, when running a deployed instance, **one of the following variables must return the absolute path to the bundle:**
+However, file paths are screwed up when bundling and deploying Meteor apps. Therefore, when running a deployed instance, this package will try to figure out the absolute path to your bundle (see first ~30 lines in `utils.coffee`). If that still isn't working for you, fall back to this:
 
 1. For traditional hosts, manually set the `BUNDLE_PATH` environment variable. For instance `/var/www/app/bundle`.
 2. For deployments on hosts with ephemeral file systems like Modulus, the `APP_DIR` environment variable should be provided by host. In that case, `APP_DIR` is used instead.
@@ -250,7 +250,9 @@ Just provide a `preview` helper function on your template *or* a `preview` prop 
 
 ### Layouts
 
-In order for you not to repeat yourself, the package supports **layouts**. They are plain wrapper around template HTML, so you can keep the same `<head>` styles, media queries, and more through many email templates. Layouts works like the other templates, i.e. they support helpers, SCSS/CSS, etc.
+In order for you not to repeat yourself, the package supports **layouts**. They are plain wrapper around template HTML, so you can keep the same `<head>` styles, media queries, and more through many email templates.
+
+Layouts are formatted and works like the other template objects, i.e. they support helpers, SCSS/CSS, etc.
 
 Put an `html` layout file in `private` and refer to it in `Mailer.init()`:
 
@@ -261,7 +263,8 @@ Mailer.init(
   layout:
     name: 'emailLayout'
     path: 'email-layout.html'
-    scss: 'scss/emails.scss'
+    scss: 'scss/emails.scss'    # Optional
+    css: 'css/emails.css'       # Optional
 )
 ```
 
@@ -272,6 +275,9 @@ Templates.invitationEmail =
   # .. props
   layout:
     name: 'specialLayout'
+    path: 'special-layout.html'
+    scss: 'scss/special-emails.scss'    # Optional
+    css: 'css/special-emails.css'       # Optional
 ```
 
 .. or not at all:
