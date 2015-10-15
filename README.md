@@ -4,6 +4,22 @@
 
 Usually, building HTML emails yourself is tedious. On top of that, add the need for data integration and thus a template language (for sending out daily digest emails, for instance). We wanted a way to preview the email in the browser *with real data* in order to quickly iterate on the design, instead of alternating between code editor and email client.
 
+1. [Features](#features)
+2. [Installation](#installation)
+3. [Sample app](#sample-app)
+4. [API](#api)
+5. [Usage](#usage)
+   a) [Setting up templates](#setting-up-templates)
+   b) [Template paths on deployed instances](#template-paths-on-deployed-instances)
+   c) [Template helpers](#template-helpers)
+   d) [Layouts](#layouts)
+   e) [Previewing and sending](#previewing-and-sending)
+   f) [Paths](#paths)
+   g) [Sample file structure](#sample-file-structure)
+   e) [Logging](#logging)
+6. [Version history](#version-history)
+7. [Contributing](#contributing)
+
 ## Features
 
 - **Server side rendering** with the [Meteor SSR](https://github.com/meteorhacks/meteor-ssr/) package. Use Blaze features and helpers like on the client.
