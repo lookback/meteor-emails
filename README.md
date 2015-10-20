@@ -1,7 +1,3 @@
-#
-# NOTE: This is a work in progress.
-#
-
 # Meteor Emails
 
 `lookback:emails` is a Meteor package that makes it easier to build, test and debug rich HTML emails.
