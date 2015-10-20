@@ -8,10 +8,27 @@
 
 Usually, building HTML emails yourself is tedious. On top of that, add the need for data integration and thus a template language (for sending out daily digest emails, for instance). We wanted a way to preview the email in the browser *with real data* in order to quickly iterate on the design, instead of alternating between code editor and email client.
 
+1. [Features](#features)
+2. [Installation](#installation)
+3. [Sample app](#sample-app)
+4. [API](#api)
+5. [Usage](#usage)
+   1. [Setting up templates](#setting-up-templates)
+   2. [Template paths on deployed instances](#template-paths-on-deployed-instances)
+   3. [Template helpers](#template-helpers)
+   4. [Layouts](#layouts)
+   5. [Previewing and sending](#previewing-and-sending)
+   6. [Paths](#paths)
+   7. [Sample file structure](#sample-file-structure)
+   8. [Logging](#logging)
+6. [Version history](#version-history)
+7. [Contributing](#contributing)
+
 ## Features
 
 - **Server side rendering** with the [Meteor SSR](https://github.com/meteorhacks/meteor-ssr/) package. Use Blaze features and helpers like on the client.
 - **CSS inlining** with [Juice](http://npmjs.org/package/juice). No extra build step.
+- **SCSS support** using `node-sass` (opt-in).
 - **Preview and debug** emails in development mode in your browser when developing.
 - **Layouts** for re-using markup.
 
@@ -28,6 +45,14 @@ meteor add lookback:emails
 [Annotated source](http://lookback.github.io/meteor-emails/docs/emails.html)
 
 A `Mailer` global will exported on the *server*.
+
+**Notice.** If you want SCSS support, be sure to add the `[meteor-node-sass](https://github.com/chrisbutler/meteor-node-sass)` package to your app:
+
+```
+meteor add chrisbutler:node-sass
+```
+
+`lookback:emails` will automatically detect `node-sass` being available, and will be able to compile `.scss` files.
 
 ## Sample app
 
@@ -181,7 +206,7 @@ Simple as a pie!
 
 This package assumes that assets (templates, SCSS, CSS ..) are stored in the `private` directory. Thanks to that, Meteor won't touch the HTML and CSS, which are non-JS files. Unfortunately, Meteor packages can't access content in `private` with the `Assets.getText()` method, so we need the *absolute path* to the template directory.
 
-However, file paths are screwed up when bundling and deploying Meteor apps. Therefore, when running a deployed instance, **one of the following variables must return the absolute path to the bundle:**
+However, file paths are screwed up when bundling and deploying Meteor apps. Therefore, when running a deployed instance, this package will try to figure out the absolute path to your bundle (see first ~30 lines in `utils.coffee`). If that still isn't working for you, fall back to this:
 
 1. For traditional hosts, manually set the `BUNDLE_PATH` environment variable. For instance `/var/www/app/bundle`.
 2. For deployments on hosts with ephemeral file systems like Modulus, the `APP_DIR` environment variable should be provided by host. In that case, `APP_DIR` is used instead.
@@ -245,7 +270,9 @@ Just provide a `preview` helper function on your template *or* a `preview` prop 
 
 ### Layouts
 
-In order for you not to repeat yourself, the package supports **layouts**. They are plain wrapper around template HTML, so you can keep the same `<head>` styles, media queries, and more through many email templates. Layouts works like the other templates, i.e. they support helpers, SCSS/CSS, etc.
+In order for you not to repeat yourself, the package supports **layouts**. They are plain wrapper around template HTML, so you can keep the same `<head>` styles, media queries, and more through many email templates.
+
+Layouts are formatted and works like the other template objects, i.e. they support helpers, SCSS/CSS, etc.
 
 Put an `html` layout file in `private` and refer to it in `Mailer.init()`:
 
@@ -256,7 +283,8 @@ Mailer.init(
   layout:
     name: 'emailLayout'
     path: 'email-layout.html'
-    scss: 'scss/emails.scss'
+    scss: 'scss/emails.scss'    # Optional
+    css: 'css/emails.css'       # Optional
 )
 ```
 
@@ -267,6 +295,9 @@ Templates.invitationEmail =
   # .. props
   layout:
     name: 'specialLayout'
+    path: 'special-layout.html'
+    scss: 'scss/special-emails.scss'    # Optional
+    css: 'css/special-emails.css'       # Optional
 ```
 
 .. or not at all:
@@ -414,6 +445,9 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.5.1` - Remove need for setting the `BUNDLE_PATH` environment variable ([#39](https://github.com/lookback/meteor-emails/pull/39)).
+- `0.5.0` - Remove `node-sass` as hard dependency. SCSS support is now opt-in, by adding `chrisbutler:node-sass` to your app ([#35](https://github.com/lookback/meteor-emails/pull/35)).
+- `0.4.6` - Fix paths on Windows in development mode.
 - `0.4.5`
   - CSS and SCSS is now compiled and inlined at runtime, in order to inline CSS for the rendered content. If CSS only was inlined at compile time, the dynamic content wouldn't get any styling.
   - Because of the above, we received a small performance boost due to removal of excessive SCSS inlining and inlining.
