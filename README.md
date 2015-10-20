@@ -21,6 +21,7 @@ Usually, building HTML emails yourself is tedious. On top of that, add the need 
    6. [Paths](#paths)
    7. [Sample file structure](#sample-file-structure)
    8. [Logging](#logging)
+   9. [Plain-text](#plain-text)
 6. [Version history](#version-history)
 7. [Contributing](#contributing)
 
@@ -31,6 +32,7 @@ Usually, building HTML emails yourself is tedious. On top of that, add the need 
 - **SCSS support** using `node-sass` (opt-in).
 - **Preview and debug** emails in development mode in your browser when developing.
 - **Layouts** for re-using markup.
+- **Auto Plain-text** automatically creates a plain text version from your html template for lower Spam score.
 
 Help is appreciated in order to hammer out potential issues and bugs.
 
@@ -95,6 +97,8 @@ Please inspect the provided sample code for details.
     templates: {},        // Required. A key-value hash where the keys are the template names. See more below.
     helpers: {},          // Global helpers available for all templates.
     layout: false         // Global layout template.
+    settings:
+      plainText: true     // Optional, defaults to true
   }
     ```
 
@@ -443,8 +447,19 @@ and that will be used. The logger **must** support these methods:
 
 Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
+### Plain-text
+By default, plain-text versions are automatically created from your html template and included in the final email. It's strongly advises to leave this option on, as it greatly reduces your emails' Spam score and the chance that your emails will end up in Spam folder of users. However, if you want to override this behaviour simply at this to `Mailer.init()`:
+
+```coffeescript
+Mailer.init(
+  settings:
+    plainText: false
+)
+```
+
 ## Version history
 
+- `0.6.0` - Automatically create and include plain-text email version from your HTML templates
 - `0.5.1` - Remove need for setting the `BUNDLE_PATH` environment variable ([#39](https://github.com/lookback/meteor-emails/pull/39)).
 - `0.5.0` - Remove `node-sass` as hard dependency. SCSS support is now opt-in, by adding `chrisbutler:node-sass` to your app ([#35](https://github.com/lookback/meteor-emails/pull/35)).
 - `0.4.6` - Fix paths on Windows in development mode.
