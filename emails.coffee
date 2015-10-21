@@ -7,9 +7,6 @@
 
 TAG = 'mailer'
 
-# used to make plain-text version from html version
-htmlToText = Npm.require 'html-to-text'
-
 # ## Setup
 
 # Main exported symbol with some initial settings:
@@ -233,10 +230,7 @@ MailerClass = (options) ->
 
       # create plain-text version from html
       if settings.plainText
-        try
-          opts.text = htmlToText.fromString opts.html
-        catch ex
-          Utils.Logger.error "Could not make plain-text version from html: " + ex.message
+        opts.text = Utils.toText(html)
 
     catch ex
       Utils.Logger.error 'Could not render email before sending: ' + ex.message, TAG
@@ -260,30 +254,35 @@ MailerClass = (options) ->
   # This function adds the `preview` route from a `template` object.
   # It will apply the returned data from a `data` function on the
   # provided `route` prop from the template.
-  previewAction = (template) ->
-    try
-      data = template.route.data and template.route.data.apply(this, arguments)
-    catch ex
-      msg = 'Exception in '+template.name+' data function: '+ex.message
-      Utils.Logger.error msg, TAG
-      @response.writeHead 500
-      return @response.end msg
+  previewAction = (opts) ->
+    check opts,
+      type: Match.OneOf('html', 'text')
 
-    # Compile, since we wanna refresh markup and CSS inlining.
-    compile template
+    return (template) ->
+      try
+        data = template.route.data and template.route.data.apply(this, arguments)
+      catch ex
+        msg = 'Exception in '+template.name+' data function: '+ex.message
+        Utils.Logger.error msg, TAG
+        @response.writeHead 500
+        return @response.end msg
 
-    Utils.Logger.info "Rendering #{template.name} ...", TAG
+      # Compile, since we wanna refresh markup and CSS inlining.
+      compile template
 
-    try
-      html = render template.name, data
-      Utils.Logger.info "Rendering successful!", TAG
-    catch ex
-      msg = 'Could not preview email: ' + ex.message
-      Utils.Logger.error msg, TAG
-      html = msg
+      Utils.Logger.info "Rendering #{template.name} as #{opts.type} ...", TAG
 
-    @response.writeHead 200, 'Content-Type': 'text/html'
-    @response.end(html, 'utf8')
+      try
+        html = render template.name, data
+        content = if opts.type is 'html' then html else Utils.toText(html)
+        Utils.Logger.info "Rendering successful!", TAG
+      catch ex
+        msg = 'Could not preview email: ' + ex.message
+        Utils.Logger.error msg, TAG
+        content = msg
+
+      @response.writeHead 200, 'Content-Type': if opts.type is 'html' then 'text/html' else 'text/plain'
+      @response.end(content, 'utf8')
 
   # This function adds the `send` route, for easy sending emails from
   # the browser.
@@ -330,7 +329,8 @@ MailerClass = (options) ->
     check template.route.path, String
 
     types =
-      preview: previewAction
+      preview: previewAction(type: 'html')
+      text: previewAction(type: 'text')
       send: sendAction
 
     _.each types, (action, type) ->

@@ -2,6 +2,7 @@
 
 fs = Npm.require 'fs'
 path = Npm.require 'path'
+htmlToText = Npm.require 'html-to-text'
 
 TAG = 'mailer-utils'
 
@@ -37,6 +38,13 @@ ROOT     ||= developmentPrivateDir()
 
 
 Utils =
+
+  # Takes an HTML string and outputs a text version of it. Catches and logs errors.
+  toText: (html) ->
+    try
+      return htmlToText.fromString(html)
+    catch ex
+      Utils.Logger.error "Could not make plain-text version from html: " + ex.message
 
   capitalizeFirstChar: (string) ->
     string.charAt(0).toUpperCase() + string.slice(1)

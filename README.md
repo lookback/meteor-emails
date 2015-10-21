@@ -13,11 +13,11 @@ Usually, building HTML emails yourself is tedious. On top of that, add the need 
    2. [Template paths on deployed instances](#template-paths-on-deployed-instances)
    3. [Template helpers](#template-helpers)
    4. [Layouts](#layouts)
-   5. [Previewing and sending](#previewing-and-sending)
-   6. [Paths](#paths)
-   7. [Sample file structure](#sample-file-structure)
-   8. [Logging](#logging)
-   9. [Plain-text](#plain-text)
+   5. [Plain text version](#plain-text)
+   6. [Previewing and sending](#previewing-and-sending)
+   7. [Paths](#paths)
+   8. [Sample file structure](#sample-file-structure)
+   9. [Logging](#logging)
 6. [Version history](#version-history)
 7. [Contributing](#contributing)
 
@@ -28,7 +28,7 @@ Usually, building HTML emails yourself is tedious. On top of that, add the need 
 - **SCSS support** using `node-sass` (opt-in).
 - **Preview and debug** emails in development mode in your browser when developing.
 - **Layouts** for re-using markup.
-- **Auto Plain-text** automatically creates a plain text version from your html template for lower Spam score.
+- **Auto Plain-text** automatically creates a plain text version from your HTML template for lower spam score.
 
 Help is appreciated in order to hammer out potential issues and bugs.
 
@@ -339,6 +339,17 @@ It's you to render the raw CSS in your layout:
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 ```
 
+### Plain text version
+
+By default, plain text versions are automatically created from your html template and included in the final email. It's strongly advises to leave this option on, as it greatly reduces your emails' spam score and the chance that your emails will end up in spam folder of users. However, if you want to override this behaviour simply at this to `Mailer.config()`:
+
+```coffeescript
+Mailer.config(
+  # ...
+  plainText: false
+)
+```
+
 ### Previewing and Sending
 
 `lookback:emails` makes it easier to preview email designs in your browser. And you can even interface with you database collections in order to fill them emails with *real data*.
@@ -349,11 +360,12 @@ Noticed the `route` property on the template? It uses Iron Router's server side 
 
 The `route` property expects a `path` property (feel free to use any of Iron Router's fanciness in here) and an optional `data` function providing the data context (an object). The function has access to the same scope as Iron Router's `action` hook, which means you can get a hold of parameters and the whole shebang.
 
-**Two routes** will be added:
+**Three routes** will be added:
 
 ```
-/emails/preview/<routeName>
-/emails/send/<routeName>
+/emails/preview/<routeName>   # Preview as HTML
+/emails/text/<routeName>      # Preview as plain text
+/emails/send/<routeName>      # Send the email to an address
 ```
 The `/emails` root prefix is configurable in `config` in the `routePrefix` key.
 
@@ -367,6 +379,7 @@ So for a template named `newsletterEmail`, the route names will be
 
 ```
 previewNewsletterEmail
+textNewsletterEmail
 sendNewsletterEmail
 ```
 
@@ -443,19 +456,9 @@ and that will be used. The logger **must** support these methods:
 
 Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
-### Plain-text
-By default, plain-text versions are automatically created from your html template and included in the final email. It's strongly advises to leave this option on, as it greatly reduces your emails' Spam score and the chance that your emails will end up in Spam folder of users. However, if you want to override this behaviour simply at this to `Mailer.init()`:
-
-```coffeescript
-Mailer.init(
-  settings:
-    plainText: false
-)
-```
-
 ## Version history
 
-- `0.6.0` - Automatically create and include plain-text email version from your HTML templates
+- `0.6.0` - Automatically create and include plain text email version from your HTML templates, using [`html-to-text`](http://npmjs.com/package/html-to-text).
 - `0.5.1` - Remove need for setting the `BUNDLE_PATH` environment variable ([#39](https://github.com/lookback/meteor-emails/pull/39)).
 - `0.5.0` - Remove `node-sass` as hard dependency. SCSS support is now opt-in, by adding `chrisbutler:node-sass` to your app ([#35](https://github.com/lookback/meteor-emails/pull/35)).
 - `0.4.6` - Fix paths on Windows in development mode.
