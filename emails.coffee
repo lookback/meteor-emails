@@ -7,6 +7,9 @@
 
 TAG = 'mailer'
 
+# used to make plain-text version from html version
+htmlToText = Npm.require 'html-to-text'
+
 # ## Setup
 
 # Main exported symbol with some initial settings:
@@ -27,6 +30,7 @@ Mailer =
     disabled: false
     addRoutes: process.env.NODE_ENV is 'development'
     language: 'html'
+    plainText: true
 
     juiceOpts:
       preserveMediaQueries: true
@@ -226,6 +230,14 @@ MailerClass = (options) ->
     # Render HTML with optional data context.
     try
       opts.html = render options.template, options.data
+
+      # create plain-text version from html
+      if settings.plainText
+        try
+          opts.text = htmlToText.fromString opts.html
+        catch ex
+          Utils.Logger.error "Could not make plain-text version from html: " + ex.message
+
     catch ex
       Utils.Logger.error 'Could not render email before sending: ' + ex.message, TAG
       return false
