@@ -230,7 +230,7 @@ MailerClass = (options) ->
 
       # create plain-text version from html
       if settings.plainText
-        opts.text = Utils.toText(html)
+        opts.text = Utils.toText(opts.html)
 
     catch ex
       Utils.Logger.error 'Could not render email before sending: ' + ex.message, TAG
