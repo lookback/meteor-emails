@@ -457,6 +457,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.6.1`- Fix critical runtime crash when sending emails.
 - `0.6.0` - Automatically create and include plain text email version from your HTML templates, using [`html-to-text`](http://npmjs.com/package/html-to-text).
 - `0.5.1` - Remove need for setting the `BUNDLE_PATH` environment variable ([#39](https://github.com/lookback/meteor-emails/pull/39)).
 - `0.5.0` - Remove `node-sass` as hard dependency. SCSS support is now opt-in, by adding `chrisbutler:node-sass` to your app ([#35](https://github.com/lookback/meteor-emails/pull/35)).
