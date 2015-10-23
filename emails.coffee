@@ -28,7 +28,7 @@ Mailer =
     addRoutes: process.env.NODE_ENV is 'development'
     language: 'html'
     plainText: true
-
+    plainTextOpts: {}
     juiceOpts:
       preserveMediaQueries: true
       removeStyleTags: true
@@ -202,6 +202,10 @@ MailerClass = (options) ->
 
     return rendered
 
+  # Short hand function for converting HTML to plain text with some options.
+  toText = (html) ->
+    Utils.toText(html, settings.plainTextOpts)
+
   # ## Send
   #
   # The main sending-email function. Takes a set of usual email options,
@@ -230,7 +234,7 @@ MailerClass = (options) ->
 
       # create plain-text version from html
       if settings.plainText
-        opts.text = Utils.toText(opts.html)
+        opts.text = toText(opts.html)
 
     catch ex
       Utils.Logger.error 'Could not render email before sending: ' + ex.message, TAG
@@ -274,7 +278,7 @@ MailerClass = (options) ->
 
       try
         html = render template.name, data
-        content = if opts.type is 'html' then html else Utils.toText(html)
+        content = if opts.type is 'html' then html else toText(html)
         Utils.Logger.info "Rendering successful!", TAG
       catch ex
         msg = 'Could not preview email: ' + ex.message

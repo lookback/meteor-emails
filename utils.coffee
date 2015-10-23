@@ -40,9 +40,9 @@ ROOT     ||= developmentPrivateDir()
 Utils =
 
   # Takes an HTML string and outputs a text version of it. Catches and logs errors.
-  toText: (html) ->
+  toText: (html, opts = {}) ->
     try
-      return htmlToText.fromString(html)
+      return htmlToText.fromString(html, opts)
     catch ex
       Utils.Logger.error "Could not make plain-text version from html: " + ex.message
 

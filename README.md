@@ -83,6 +83,7 @@ Please inspect the provided sample code for details.
     addRoutes: process.env.NODE_ENV === 'development' // Add routes for previewing and sending emails. Defaults to `true` in development.
     language: 'html'                    // The template language to use. Defaults to 'html', but can be anything Meteor SSR supports (like Jade, for instance).
     plainText: true                     // Send plain text version of HTML email as well.
+    plainTextOpts: {}                   // Options for `html-to-text` module. See all here: https://www.npmjs.com/package/html-to-text
   }
     ```
 
@@ -345,9 +346,15 @@ By default, plain text versions are automatically created from your html templat
 ```coffeescript
 Mailer.config(
   # ...
-  plainText: false
+  plainText: false,
+  plainTextOpts: {
+    // Your options to send to the module, defaults to {}
+    ignoreImage: true
+  }
 )
 ```
+
+Consult the `html-to-text` [documentation](https://www.npmjs.com/package/html-to-text) for available options. See in the example app in this repo for how to disable images in plain text version, for instance.
 
 ### Previewing and Sending
 
