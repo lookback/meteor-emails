@@ -3,7 +3,7 @@ var where = 'server';
 Package.describe({
   name: 'lookback:emails',
   summary: 'Send HTML emails with server side Blaze templates. Preview and debug in the browser.',
-  version: '0.6.1',
+  version: '0.6.2',
   git: 'https://github.com/lookback/meteor-emails.git'
 });
 

@@ -464,6 +464,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.6.2` - Support passing options to `html-to-text` module in `Mailer.config()`.
 - `0.6.1`- Fix critical runtime crash when sending emails.
 - `0.6.0` - Automatically create and include plain text email version from your HTML templates, using [`html-to-text`](http://npmjs.com/package/html-to-text).
 - `0.5.1` - Remove need for setting the `BUNDLE_PATH` environment variable ([#39](https://github.com/lookback/meteor-emails/pull/39)).
