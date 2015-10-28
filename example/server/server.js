@@ -1,7 +1,10 @@
 Mailer.config({
   from: 'John Doe <from@domain.com>',
   replyTo: 'John Doe <from@domain.com>',
-  addRoutes: true
+  addRoutes: true,
+  plainTextOpts: {
+    ignoreImage: true
+  }
 });
 
 Meteor.startup(function() {
