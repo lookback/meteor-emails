@@ -238,15 +238,17 @@ baseUrl: (path) ->
 # creates an absolute URL.
 #
 #     {{ emailUrlFor 'myRoute' param='foo' }} => http://root-domain.com/my-route/foo
-  emailUrlFor: (routeName, params) ->
-    # if Iron Router
-    if Router?
-      Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, routeName, params.hash)
+emailUrlFor: (routeName, params) ->
+  # if Iron Router
+  if Router?
+    Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, routeName, params.hash)
 
-    # if Flow Router
-    if FlowRouter?
-      baseUrl = Utils.joinUrl Mailer.settings.baseUrl, FlowRouter.path.call(FlowRouter, routeName, params.hash)
+  # if Flow Router
+  if FlowRouter?
+    baseUrl = Utils.joinUrl Mailer.settings.baseUrl, FlowRouter.path.call(FlowRouter, routeName, params.hash)
 ```
+
+Please note that for Flow Router you need to have your routes defined in a place where the server can see them, in order for the `emailUrlFor` helper to work.
 
 #### The preview line
 
