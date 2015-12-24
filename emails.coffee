@@ -57,9 +57,15 @@ Helpers =
   # creates an absolute URL.
   #
   #     {{ emailUrlFor 'myRoute' param='foo' }} => http://root-domain.com/my-route/foo
-  emailUrlFor: (route, params) ->
-    if Router
-      Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, route, params.hash)
+  emailUrlFor: (routeName, params) ->
+    # if Iron Router
+    if Router?
+      Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, routeName, params.hash)
+
+    # if Flow Router
+    if FlowRouter?
+      baseUrl = Utils.joinUrl Mailer.settings.baseUrl, FlowRouter.path.call(FlowRouter, routeName, params.hash)
+
 
 # # The mailer
 #
@@ -258,18 +264,18 @@ MailerClass = (options) ->
   # This function adds the `preview` route from a `template` object.
   # It will apply the returned data from a `data` function on the
   # provided `route` prop from the template.
-  previewAction = (opts) ->
+  previewAction = (opts, template, params) ->
     check opts,
       type: Match.OneOf('html', 'text')
 
-    return (template) ->
+    return (template, params) ->
       try
-        data = template.route.data and template.route.data.apply(this, arguments)
+        data = template.route.data and template.route.data.call(this, params)
       catch ex
         msg = 'Exception in '+template.name+' data function: '+ex.message
         Utils.Logger.error msg, TAG
-        @response.writeHead 500
-        return @response.end msg
+        @writeHead 500
+        return @end msg
 
       # Compile, since we wanna refresh markup and CSS inlining.
       compile template
@@ -285,21 +291,21 @@ MailerClass = (options) ->
         Utils.Logger.error msg, TAG
         content = msg
 
-      @response.writeHead 200, 'Content-Type': if opts.type is 'html' then 'text/html' else 'text/plain'
-      @response.end(content, 'utf8')
+      @writeHead 200, 'Content-Type': if opts.type is 'html' then 'text/html' else 'text/plain'
+      @end(content, 'utf8')
 
   # This function adds the `send` route, for easy sending emails from
   # the browser.
-  sendAction = (template) ->
+  sendAction = (template, params) ->
     # Who to send to? It depends: it primarly reads from the `?to`
     # query param, and secondly from the `testEmail` prop in settings.
-    to = @params.query.to or settings.testEmail
+    to = params.query.to or settings.testEmail
 
     Utils.Logger.info "Sending #{template.name} ...", TAG
 
     if to?
       try
-        data = template.route.data and template.route.data.apply(this, arguments)
+        data = template.route.data and template.route.data.call(this, params)
       catch ex
         Utils.Logger.error 'Exception in '+template.name+' data function: '+ex.message, TAG
         return
@@ -315,17 +321,17 @@ MailerClass = (options) ->
         @response.writeHead 500
         msg = 'Did not send test email, something went wrong. Check the logs.'
       else
-        @response.writeHead 200
+        @writeHead 200
         # If there's no `MAIL_URL` environment variable, Meteor cannot send
         # the email and echoes it out to `STDOUT` instead.
         reallySentEmail = !!process.env.MAIL_URL
         msg = if reallySentEmail then "Sent test email to #{to}" else "Sent email to STDOUT"
 
-      @response.end(msg)
+      @end(msg)
 
     else
-      @response.writeHead 400
-      @response.end("No testEmail provided.")
+      @writeHead 400
+      @end("No testEmail provided.")
 
   # Adds all the routes from a template.
   addRoutes = (template) ->
@@ -347,18 +353,17 @@ MailerClass = (options) ->
       # Also capitalize the first character in the template name for
       # the name of the route, so it will look like `previewSample` for a
       # template named `sample`.
-      path = "#{settings.routePrefix}/#{type}" + template.route.path
+      path = "/#{settings.routePrefix}/#{type}" + template.route.path
       name = Utils.capitalizeFirstChar(template.name)
       routeName = "#{type}#{name}"
 
-      Utils.Logger.info "Add route: [#{routeName}] at path /" + path, TAG
+      Utils.Logger.info "Add route: [#{routeName}] at path " + path, TAG
 
-      Router.route routeName,
-        path: path
-        where: 'server'
-        # An action still need the route context, but call it
-        # with our `template` as the sole parameter.
-        action: -> action.call(this, template)
+      # we use Picker for server side routes
+      Picker.route(path, (params, req, res) ->
+        action.call res, template, params
+      )
+
 
   # ## Init
   #

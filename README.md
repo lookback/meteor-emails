@@ -136,7 +136,7 @@ In `Mailer.init`, you're able to provide a key-value object with *template objec
     teamMembers: ->
       @team.users.map (user) -> Meteor.users.findOne(user)
 
-  # For previewing the email in your browser. Behaves like an ordinary Iron Router route.  
+  # For previewing the email in your browser.
   route:
     path: '/activity/:user'
     data: ->
@@ -234,15 +234,21 @@ The built in helpers are:
 baseUrl: (path) ->
   Utils.joinUrl(Mailer.settings.baseUrl, path)
 
-# `emailUrlFor` takes an Iron Router route (with optional params) and
+# `emailUrlFor` takes an Iron Router or Flow Router route (with optional params) and
 # creates an absolute URL.
 #
 #     {{ emailUrlFor 'myRoute' param='foo' }} => http://root-domain.com/my-route/foo
-emailUrlFor: (route, params) ->
-  if Router
-    Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, route, params.hash)
+emailUrlFor: (routeName, params) ->
+  # if Iron Router
+  if Router?
+    Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, routeName, params.hash)
 
+  # if Flow Router
+  if FlowRouter?
+    baseUrl = Utils.joinUrl Mailer.settings.baseUrl, FlowRouter.path.call(FlowRouter, routeName, params.hash)
 ```
+
+Please note that for Flow Router you need to have your routes defined in a place where the server can see them, in order for the `emailUrlFor` helper to work.
 
 #### The preview line
 
@@ -362,9 +368,9 @@ Consult the `html-to-text` [documentation](https://www.npmjs.com/package/html-to
 
 It's also possible to *send* emails to yourself or others for review in a real mail client.
 
-Noticed the `route` property on the template? It uses Iron Router's server side routes under the hood.
+Noticed the `route` property on the template? It uses `meteorhacks:picker` server side routes under the hood.
 
-The `route` property expects a `path` property (feel free to use any of Iron Router's fanciness in here) and an optional `data` function providing the data context (an object). The function has access to the same scope as Iron Router's `action` hook, which means you can get a hold of parameters and the whole shebang.
+The `route` property expects a `path` property and an optional `data` function providing the data context (an object). The function has access to the parameters of the route.
 
 **Three routes** will be added:
 
@@ -375,7 +381,7 @@ The `route` property expects a `path` property (feel free to use any of Iron Rou
 ```
 The `/emails` root prefix is configurable in `config` in the `routePrefix` key.
 
-The Iron Router *route names* will be on the format
+The *route names* will be on the format
 
 ```
 [preview|send]Name
@@ -464,6 +470,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.7.0` - Replaced Iron Router dependency with `meteorhacks:picker`, which means you can now use this package with Flow Router as well.
 - `0.6.2` - Support passing options to `html-to-text` module in `Mailer.config()`.
 - `0.6.1`- Fix critical runtime crash when sending emails.
 - `0.6.0` - Automatically create and include plain text email version from your HTML templates, using [`html-to-text`](http://npmjs.com/package/html-to-text).
