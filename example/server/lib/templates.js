@@ -5,16 +5,16 @@ Templates.sample = {
   scss: 'sample-email/style.scss',       // Mail specific SCSS.
 
   helpers: {
-    capitalizedName: function() {
+    capitalizedName() {
       return this.name.charAt(0).toUpperCase() + this.name.slice(1);
     }
   },
 
   route: {
     path: '/sample/:name',
-    data: function() {
+    data: function(params) {
       return {
-        name: this.params.name,
+        name: params.name,
         names: ['Johan', 'John', 'Paul', 'Ringo']
       };
     }

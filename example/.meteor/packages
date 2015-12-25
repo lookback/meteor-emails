@@ -4,6 +4,7 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
+ecmascript
 lookback:emails
 chrisbutler:node-sass@3.2.0
 standard-minifiers
@@ -11,3 +12,5 @@ meteor-base
 blaze-html-templates
 reload
 spacebars
+kadira:flow-router
+#iron:router

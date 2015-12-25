@@ -15,7 +15,11 @@ Package.onUse(function(api) {
 
   api.versionsFrom('1.0.4');
 
-  api.use('chrisbutler:node-sass@3.2.0', where, { weak: true });
+  api.use([
+    'chrisbutler:node-sass@3.2.0',
+    'iron:router@1.0.7',
+    'kadira:flow-router@2.9.0'
+  ], where, { weak: true });
 
   api.use([
     'check',

@@ -59,13 +59,17 @@ Helpers =
   #     {{ emailUrlFor 'myRoute' param='foo' }} => http://root-domain.com/my-route/foo
   emailUrlFor: (routeName, params) ->
     # if Iron Router
-    if Router?
-      Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, routeName, params.hash)
+    theRouter = null
+    if Package['iron:router']
+      theRouter = Router
+    else if Package['kadira:flow-router']
+      theRouter = FlowRouter
 
-    # if Flow Router
-    if FlowRouter?
-      baseUrl = Utils.joinUrl Mailer.settings.baseUrl, FlowRouter.path.call(FlowRouter, routeName, params.hash)
-
+    if theRouter && theRouter.path
+      Utils.joinUrl(Mailer.settings.baseUrl, theRouter.path.call(theRouter, routeName, params.hash))
+    else
+      Utils.Logger.warn("We noticed that neither Iron Router nor FlowRouter is installed, thus 'emailUrlFor' can't render a path to the route '#{routeName}'.", TAG)
+      return '#'
 
 # # The mailer
 #
@@ -272,10 +276,22 @@ MailerClass = (options) ->
       try
         data = template.route.data and template.route.data.call(this, params)
       catch ex
-        msg = 'Exception in '+template.name+' data function: '+ex.message
-        Utils.Logger.error msg, TAG
-        @writeHead 500
-        return @end msg
+        msg = ''
+        exception = 'Exception in '+template.name+' data function: '+ex.message
+
+        func = template.route.data.toString()
+
+        if func.indexOf('this.params') isnt -1
+          msg = "Seems like you're calling this.params in the data function for the template '#{template.name}'. As of 0.7.0, this package doesn't use Iron Router for server side
+          routing, and thus you cannot rely on its API.\n\nYou can access URL params with the new function signature:\n\n\tfunction data(params:object)\n\ninstead of using this.params. The function scope (this) is now an instance of NodeJS's http.ServerResponse.\n\nSee https://github.com/lookback/meteor-emails#version-history for more info.\n\nThe exception thrown was: #{ex.message}"
+        else if func.indexOf('this.') isnt -1 && Package['iron:router']
+          msg = "Seems like you're accessing 'this' in the data function for '#{template.name}'. As of 0.7.0, we've removed Iron Router, and thus you cannot rely on its API.\n\nThe function scope is now an instance of NodeJS's http.ServerResponse.\n\nSee https://github.com/lookback/meteor-emails#version-history for more info.\n\nThe exception thrown was: #{ex.message}"
+        else
+          msg = exception
+
+        Utils.Logger.error(msg, TAG)
+        this.writeHead(500)
+        return this.end(msg)
 
       # Compile, since we wanna refresh markup and CSS inlining.
       compile template
