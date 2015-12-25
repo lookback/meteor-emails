@@ -470,6 +470,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.7.1` - Check for existence of `Blaze` global before extending with registered Blaze helpers.
 - `0.7.0` - Replaced Iron Router dependency with `meteorhacks:picker`, which means you can now use this package with FlowRouter as well.
 
   **Breaking change:** If you're using `this.params` in your custom mail routes' data functions (for sending or previewing emails), you need to change the function signature to accept a `params` parameter, and use that instead.
