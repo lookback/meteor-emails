@@ -470,7 +470,25 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
-- `0.7.0` - Replaced Iron Router dependency with `meteorhacks:picker`, which means you can now use this package with Flow Router as well.
+- `0.7.0` - Replaced Iron Router dependency with `meteorhacks:picker`, which means you can now use this package with FlowRouter as well.
+
+  **Breaking change:** If you're using `this.params` in your custom mail routes' data functions (for sending or previewing emails), you need to change the function signature to accept a `params` parameter, and use that instead.
+
+  `this` in data functions is not an instance of NodeJS' [`http.ServerResponse`](https://nodejs.org/api/http.html#http_class_http_serverresponse).
+
+  ```js
+route: {
+  path: '/sample/:name',
+  // params is an object, with potentially named parameters, and a `query` property
+  // for a potential query string.
+  data: function(params) {
+    // `this` is the HTTP response object.
+    return {
+      name: params.name // instead of this.name
+    };
+  }
+}
+  ```
 - `0.6.2` - Support passing options to `html-to-text` module in `Mailer.config()`.
 - `0.6.1`- Fix critical runtime crash when sending emails.
 - `0.6.0` - Automatically create and include plain text email version from your HTML templates, using [`html-to-text`](http://npmjs.com/package/html-to-text).
