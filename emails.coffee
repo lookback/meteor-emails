@@ -93,7 +93,8 @@ MailerClass = (options) ->
   )
 
   settings = _.extend({}, Mailer.settings, options.settings)
-  globalHelpers = _.extend({}, Helpers, Blaze._globalHelpers, options.helpers)
+  blazeHelpers = if typeof Blaze isnt 'undefined' then Blaze._globalHelpers else {}
+  globalHelpers = _.extend({}, Helpers, blazeHelpers, options.helpers)
 
   Utils.setupLogger(settings.logger, suppressInfo: settings.silent)
 
