@@ -11,7 +11,8 @@
     "browser": true,
     "node": true,
     "jquery": true,
-    "meteor": true
+    "meteor": true,
+    "es6": true
   },
 
   "globals": {
