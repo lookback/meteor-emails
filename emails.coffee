@@ -7,6 +7,11 @@
 
 TAG = 'mailer'
 
+CONTENT_TYPES = {
+  html: 'text/html',
+  text: 'text/plain'
+}
+
 # ## Setup
 
 # Main exported symbol with some initial settings:
@@ -269,13 +274,12 @@ MailerClass = (options) ->
   # This function adds the `preview` route from a `template` object.
   # It will apply the returned data from a `data` function on the
   # provided `route` prop from the template.
-  previewAction = (opts, template, params) ->
-    check opts,
-      type: Match.OneOf('html', 'text')
+  previewAction = (type) ->
+    check type, Match.OneOf('html', 'text')
 
-    return (template, params) ->
+    return (req, res, params, template) ->
       try
-        data = template.route.data and template.route.data.call(this, params)
+        data = template.route.data and template.route.data.call(res, params)
       catch ex
         msg = ''
         exception = 'Exception in '+template.name+' data function: '+ex.message
@@ -291,29 +295,29 @@ MailerClass = (options) ->
           msg = exception
 
         Utils.Logger.error(msg, TAG)
-        this.writeHead(500)
-        return this.end(msg)
+        res.writeHead(500)
+        res.end(msg)
 
       # Compile, since we wanna refresh markup and CSS inlining.
       compile template
 
-      Utils.Logger.info "Rendering #{template.name} as #{opts.type} ...", TAG
+      Utils.Logger.info "Rendering #{template.name} as #{type} ...", TAG
 
       try
         html = render template.name, data
-        content = if opts.type is 'html' then html else toText(html)
+        content = if type is 'html' then html else toText(html)
         Utils.Logger.info "Rendering successful!", TAG
       catch ex
         msg = 'Could not preview email: ' + ex.message
         Utils.Logger.error msg, TAG
         content = msg
 
-      @writeHead 200, 'Content-Type': if opts.type is 'html' then 'text/html' else 'text/plain'
-      @end(content, 'utf8')
+      res.writeHead 200, 'Content-Type': CONTENT_TYPES[type]
+      res.end(content, 'utf8')
 
   # This function adds the `send` route, for easy sending emails from
   # the browser.
-  sendAction = (template, params) ->
+  sendAction = (req, res, params, template) ->
     # Who to send to? It depends: it primarly reads from the `?to`
     # query param, and secondly from the `testEmail` prop in settings.
     to = params.query.to or settings.testEmail
@@ -322,33 +326,33 @@ MailerClass = (options) ->
 
     if to?
       try
-        data = template.route.data and template.route.data.call(this, params)
+        data = template.route.data and template.route.data.call(res, params)
       catch ex
         Utils.Logger.error 'Exception in '+template.name+' data function: '+ex.message, TAG
         return
 
-      res = sendEmail(
+      result = sendEmail(
         to: to
         data: data
         template: template.name
         subject: '[TEST] ' + template.name
       )
 
-      if res is false
-        @response.writeHead 500
+      if result is false
+        res.writeHead 500
         msg = 'Did not send test email, something went wrong. Check the logs.'
       else
-        @writeHead 200
+        res.writeHead 200
         # If there's no `MAIL_URL` environment variable, Meteor cannot send
         # the email and echoes it out to `STDOUT` instead.
         reallySentEmail = !!process.env.MAIL_URL
         msg = if reallySentEmail then "Sent test email to #{to}" else "Sent email to STDOUT"
 
-      @end(msg)
+      res.end(msg)
 
     else
-      @writeHead 400
-      @end("No testEmail provided.")
+      res.writeHead 400
+      res.end('No testEmail provided.')
 
   # Adds all the routes from a template.
   addRoutes = (template) ->
@@ -356,8 +360,8 @@ MailerClass = (options) ->
     check template.route.path, String
 
     types =
-      preview: previewAction(type: 'html')
-      text: previewAction(type: 'text')
+      preview: previewAction('html')
+      text: previewAction('text')
       send: sendAction
 
     _.each types, (action, type) ->
@@ -378,7 +382,7 @@ MailerClass = (options) ->
 
       # we use Picker for server side routes
       Picker.route(path, (params, req, res) ->
-        action.call res, template, params
+        action(req, res, params, template)
       )
 
 
