@@ -475,7 +475,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
   **Breaking change:** If you're using `this.params` in your custom mail routes' data functions (for sending or previewing emails), you need to change the function signature to accept a `params` parameter, and use that instead.
 
-  `this` in data functions is not an instance of NodeJS' [`http.ServerResponse`](https://nodejs.org/api/http.html#http_class_http_serverresponse).
+  `this` in data functions is now an instance of NodeJS' [`http.ServerResponse`](https://nodejs.org/api/http.html#http_class_http_serverresponse).
 
   ```js
 route: {
@@ -485,7 +485,7 @@ route: {
   data: function(params) {
     // `this` is the HTTP response object.
     return {
-      name: params.name // instead of this.name
+      name: params.name // instead of this.params.name
     };
   }
 }
