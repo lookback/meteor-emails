@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Routes</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="mailer.html">
+                mailer.js
+              </a>
+            
+              
+              <a class="source" href="routing.html">
+                routing.js
+              </a>
+            
+              
+              <a class="source" href="template-helpers.html">
+                template-helpers.js
+              </a>
+            
+              
+              <a class="source" href="utils.html">
+                utils.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="routes">Routes</h1>
+<p>This package supports browser routes, so you can <strong>preview</strong>
+and <strong>send email designs</strong> from the browser.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>This function adds the <code>preview</code> route from a <code>template</code> object.
+It will apply the returned data from a <code>data</code> function on the
+provided <code>route</code> prop from the template.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">const</span> CONTENT_TYPES = {
+  html: <span class="hljs-string">'text/html'</span>,
+  text: <span class="hljs-string">'text/plain'</span>
+};
+
+Routing = (template, settings, render, compile) =&gt; {
+  check(template.name, <span class="hljs-built_in">String</span>);
+  check(template.route.path, <span class="hljs-built_in">String</span>);
+  check(settings.routePrefix, <span class="hljs-built_in">String</span>);
+  check(render, <span class="hljs-built_in">Function</span>);
+  check(compile, <span class="hljs-built_in">Function</span>);
+
+  <span class="hljs-keyword">const</span> previewAction = (type) =&gt; {
+    check(type, Match.OneOf(<span class="hljs-string">'html'</span>, <span class="hljs-string">'text'</span>));
+
+    <span class="hljs-keyword">return</span> (req, res, params, template) =&gt; {
+      <span class="hljs-keyword">let</span> data = <span class="hljs-literal">null</span>;
+
+      <span class="hljs-keyword">try</span> {
+        data = template.route.data &amp;&amp; template.route.data.call(res, params);
+      } <span class="hljs-keyword">catch</span> (ex) {
+        <span class="hljs-keyword">let</span> msg = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">let</span> exception = `Exception <span class="hljs-keyword">in</span> ${template.name} data <span class="hljs-function"><span class="hljs-keyword">function</span>: <span class="hljs-title">$</span></span>{ex.message}`;
+
+        <span class="hljs-keyword">const</span> func = template.route.data.toString();
+
+        <span class="hljs-keyword">if</span> (func.indexOf(<span class="hljs-string">'this.params'</span>) !== -<span class="hljs-number">1</span>) {
+          msg = `Seems like you<span class="hljs-string">'re calling this.params in the data function for the template '</span>${template.name}<span class="hljs-string">'. As of 0.7.0, this package doesn'</span>t use Iron Router <span class="hljs-keyword">for</span> server side routing, and thus you cannot rely on its API.\n\nYou can access URL params <span class="hljs-keyword">with</span> the <span class="hljs-keyword">new</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">signature</span>:\<span class="hljs-title">n</span>\<span class="hljs-title">n</span>\<span class="hljs-title">tfunction</span> <span class="hljs-title">data</span><span class="hljs-params">(params:object)</span>\<span class="hljs-title">n</span>\<span class="hljs-title">ninstead</span> <span class="hljs-title">of</span> <span class="hljs-title">using</span> <span class="hljs-title">this</span>.<span class="hljs-title">params</span>. <span class="hljs-title">The</span> <span class="hljs-title">function</span> <span class="hljs-title">scope</span> <span class="hljs-params">(this)</span> <span class="hljs-title">is</span> <span class="hljs-title">now</span> <span class="hljs-title">an</span> <span class="hljs-title">instance</span> <span class="hljs-title">of</span> <span class="hljs-title">NodeJS</span>'<span class="hljs-title">s</span> <span class="hljs-title">http</span>.<span class="hljs-title">ServerResponse</span>.\<span class="hljs-title">n</span>\<span class="hljs-title">nSee</span> <span class="hljs-title">https</span>://<span class="hljs-title">github</span>.<span class="hljs-title">com</span>/<span class="hljs-title">lookback</span>/<span class="hljs-title">meteor</span>-<span class="hljs-title">emails</span>#<span class="hljs-title">version</span>-<span class="hljs-title">history</span> <span class="hljs-title">for</span> <span class="hljs-title">more</span> <span class="hljs-title">info</span>.\<span class="hljs-title">n</span>\<span class="hljs-title">nThe</span> <span class="hljs-title">exception</span> <span class="hljs-title">thrown</span> <span class="hljs-title">was</span>: <span class="hljs-title">$</span></span>{ex.message}`;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (func.indexOf(<span class="hljs-string">'this.'</span>) !== -<span class="hljs-number">1</span> &amp;&amp; Package[<span class="hljs-string">'iron:router'</span>]) {
+          msg = `Seems like you<span class="hljs-string">'re accessing '</span><span class="hljs-keyword">this</span><span class="hljs-string">' in the data function for '</span>${template.name}<span class="hljs-string">'. As of 0.7.0, we'</span>ve removed Iron Router, and thus you cannot rely on its API.\n\nThe <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">scope</span> <span class="hljs-title">is</span> <span class="hljs-title">now</span> <span class="hljs-title">an</span> <span class="hljs-title">instance</span> <span class="hljs-title">of</span> <span class="hljs-title">NodeJS</span>'<span class="hljs-title">s</span> <span class="hljs-title">http</span>.<span class="hljs-title">ServerResponse</span>.\<span class="hljs-title">n</span>\<span class="hljs-title">nSee</span> <span class="hljs-title">https</span>://<span class="hljs-title">github</span>.<span class="hljs-title">com</span>/<span class="hljs-title">lookback</span>/<span class="hljs-title">meteor</span>-<span class="hljs-title">emails</span>#<span class="hljs-title">version</span>-<span class="hljs-title">history</span> <span class="hljs-title">for</span> <span class="hljs-title">more</span> <span class="hljs-title">info</span>.\<span class="hljs-title">n</span>\<span class="hljs-title">nThe</span> <span class="hljs-title">exception</span> <span class="hljs-title">thrown</span> <span class="hljs-title">was</span>: <span class="hljs-title">$</span></span>{ex.message}`;
+        } <span class="hljs-keyword">else</span> {
+          msg = exception;
+        }
+
+        Utils.Logger.error(msg);
+        res.writeHead(<span class="hljs-number">500</span>);
+        res.end(msg);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Compile, since we wanna refresh markup and CSS inlining.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      compile(template);
+
+      Utils.Logger.info(`Rendering ${template.name} as ${type}…`);
+
+      <span class="hljs-keyword">let</span> content = <span class="hljs-string">''</span>;
+
+      <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">const</span> html = render(template.name, data);
+        content = type === <span class="hljs-string">'html'</span> ? html : Utils.toText(html, settings.plainTextOpts);
+        Utils.Logger.info(<span class="hljs-string">'Rendering successful!'</span>);
+      } <span class="hljs-keyword">catch</span> (ex) {
+        <span class="hljs-keyword">const</span> msg = `Could not preview email: ${ex.message}`;
+        Utils.Logger.error(msg);
+        content = msg;
+      }
+
+      res.writeHead(<span class="hljs-number">200</span>, {
+        <span class="hljs-string">'Content-Type'</span>: CONTENT_TYPES[type]
+      });
+
+      <span class="hljs-keyword">return</span> res.end(content, <span class="hljs-string">'utf8'</span>);
+    };
+  };
+
+  <span class="hljs-keyword">const</span> sendAction = (req, res, params, template) =&gt; {
+    <span class="hljs-keyword">const</span> to = params.query.to || settings.testEmail;
+
+    Utils.Logger.info(`Sending ${template.name}…`);
+
+    <span class="hljs-keyword">if</span> (to) {
+      <span class="hljs-keyword">let</span> data = <span class="hljs-literal">null</span>;
+
+      <span class="hljs-keyword">try</span> {
+        data = template.route.data &amp;&amp; template.route.data.call(res, params);
+      } <span class="hljs-keyword">catch</span> (ex) {
+        Utils.Logger.error(`Exception <span class="hljs-keyword">in</span> ${template.name} data <span class="hljs-function"><span class="hljs-keyword">function</span>: <span class="hljs-title">$</span></span>{ex.message}`);
+        <span class="hljs-keyword">return</span>;
+      }
+
+      <span class="hljs-keyword">const</span> result = Mailer.send({
+        to,
+        data,
+        template: template.name,
+        subject: <span class="hljs-string">'[TEST] '</span> + template.name
+      });
+
+      <span class="hljs-keyword">let</span> msg = <span class="hljs-string">''</span>;
+
+      <span class="hljs-keyword">if</span> (result === <span class="hljs-literal">false</span>) {
+        res.writeHead(<span class="hljs-number">500</span>);
+        msg = <span class="hljs-string">'Did not send test email, something went wrong. Check the logs.'</span>;
+      } <span class="hljs-keyword">else</span> {
+        res.writeHead(<span class="hljs-number">200</span>);
+        <span class="hljs-keyword">const</span> reallySentEmail = !!process.env.MAIL_URL;
+        msg = reallySentEmail ? `Sent test email to ${to}` : `Sent email to STDOUT`;
+      }
+
+      res.end(msg);
+
+    } <span class="hljs-keyword">else</span> {
+      res.writeHead(<span class="hljs-number">400</span>);
+      res.end(<span class="hljs-string">'No testEmail provided.'</span>);
+    }
+  };
+
+  <span class="hljs-keyword">const</span> types = {
+    preview: previewAction(<span class="hljs-string">'html'</span>),
+    text: previewAction(<span class="hljs-string">'text'</span>),
+    send: sendAction
+  };
+
+  _.each(types, (action, type) =&gt; {
+    <span class="hljs-keyword">const</span> path = `/${settings.routePrefix}/${type}` + template.route.path;
+    <span class="hljs-keyword">const</span> name = Utils.capitalizeFirstChar(template.name);
+    <span class="hljs-keyword">const</span> routeName = <span class="hljs-string">''</span> + type + name;
+
+    Utils.Logger.info(`Add route: [${routeName}] at path ${path}`);
+
+    Picker.route(path, (params, req, res) =&gt; action(req, res, params, template));
+  });
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
