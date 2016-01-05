@@ -1,3 +1,4 @@
+/* eslint no-var: 0*/
 var where = 'server';
 
 Package.describe({
@@ -22,9 +23,9 @@ Package.onUse(function(api) {
   ], where, { weak: true });
 
   api.use([
+    'ecmascript',
     'check',
     'underscore',
-    'coffeescript',
     'email',
     'sacha:juice@0.1.3',
     'meteorhacks:ssr@2.1.2',
@@ -32,9 +33,19 @@ Package.onUse(function(api) {
   ], where);
 
   api.addFiles([
-    'utils.coffee',
-    'emails.coffee'
+    'lib/utils.js',
+    'lib/template-helpers.js',
+    'lib/routing.js',
+    'lib/mailer.js'
   ], where);
 
   api.export('Mailer', where);
+});
+
+Package.onTest(function(api) {
+  api.use([
+    'practicalmeteor:mocha',
+    'ecmascript',
+    'lookback:emails'
+  ], where);
 });

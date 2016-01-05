@@ -1,21 +1,31 @@
 {
+  "extends": "eslint:recommended",
   "rules": {
     "brace-style": [2, "1tbs", { "allowSingleLine": true }],
     "strict": 0,
     "quotes": [2, "single"],
     "no-underscore-dangle": 0,
-    "curly": 0
+    "curly": 0,
+    "no-unused-vars": 1,
+    "no-console": 0,
+    "no-var": 2
   },
 
   "env": {
-    "browser": true,
     "node": true,
-    "jquery": true,
     "meteor": true,
     "es6": true
   },
 
   "globals": {
-    "Mailer": false
+    "Mailer": true,
+    "Utils": true,
+    "juice": false,
+    "FlowRouter": false,
+    "Router": false,
+    "TemplateHelpers": true,
+    "SSR": false,
+    "Picker": false,
+    "Routing": true
   }
 }

@@ -4,7 +4,7 @@ git stash && \
 git checkout -b gh-pages && \
 rm -rf docs && \
 rm -rf example && \
-docco emails.coffee utils.coffee && \
+docco lib/*.js && \
 git add . && \
 git commit -a -m 'Generate documentation' && \
 git push -f origin gh-pages && \
