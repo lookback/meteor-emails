@@ -40,7 +40,7 @@ Help is appreciated in order to hammer out potential issues and bugs.
 meteor add lookback:emails
 ```
 
-[Annotated source](http://lookback.github.io/meteor-emails/docs/emails.html)
+[Annotated source](http://lookback.github.io/meteor-emails/docs/mailer.html)
 
 A `Mailer` global will exported on the *server*.
 
