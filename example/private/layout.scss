@@ -1,5 +1,7 @@
+$color: #333;
+
 body, p {
   font-family: sans-serif;
-  color: #333;
+  color: $color;
   text-align: center;
 }

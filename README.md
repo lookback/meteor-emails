@@ -4,12 +4,31 @@
 
 Usually, building HTML emails yourself is tedious. On top of that, add the need for data integration and thus a template language (for sending out daily digest emails, for instance). We wanted a way to preview the email in the browser *with real data* in order to quickly iterate on the design, instead of alternating between code editor and email client.
 
+1. [Features](#features)
+2. [Installation](#installation)
+3. [Sample app](#sample-app)
+4. [API](#api)
+5. [Usage](#usage)
+   1. [Setting up templates](#setting-up-templates)
+   2. [Template paths on deployed instances](#template-paths-on-deployed-instances)
+   3. [Template helpers](#template-helpers)
+   4. [Layouts](#layouts)
+   5. [Plain text version](#plain-text)
+   6. [Previewing and sending](#previewing-and-sending)
+   7. [Paths](#paths)
+   8. [Sample file structure](#sample-file-structure)
+   9. [Logging](#logging)
+6. [Version history](#version-history)
+7. [Contributing](#contributing)
+
 ## Features
 
 - **Server side rendering** with the [Meteor SSR](https://github.com/meteorhacks/meteor-ssr/) package. Use Blaze features and helpers like on the client.
 - **CSS inlining** with [Juice](http://npmjs.org/package/juice). No extra build step.
+- **SCSS support** using `node-sass` (opt-in).
 - **Preview and debug** emails in development mode in your browser when developing.
 - **Layouts** for re-using markup.
+- **Auto Plain-text** automatically creates a plain text version from your HTML template for lower spam score.
 
 Help is appreciated in order to hammer out potential issues and bugs.
 
@@ -21,9 +40,17 @@ Help is appreciated in order to hammer out potential issues and bugs.
 meteor add lookback:emails
 ```
 
-[Annotated source](http://lookback.github.io/meteor-emails/docs/emails.html)
+[Annotated source](http://lookback.github.io/meteor-emails/docs/mailer.html)
 
 A `Mailer` global will exported on the *server*.
+
+**Notice.** If you want SCSS support, be sure to add the `[meteor-node-sass](https://github.com/chrisbutler/meteor-node-sass)` package to your app:
+
+```
+meteor add chrisbutler:node-sass
+```
+
+`lookback:emails` will automatically detect `node-sass` being available, and will be able to compile `.scss` files.
 
 ## Sample app
 
@@ -55,6 +82,8 @@ Please inspect the provided sample code for details.
     silent: false,                      // If set to `true`, any `Logger.info` calls won't be shown in the console to reduce clutter.
     addRoutes: process.env.NODE_ENV === 'development' // Add routes for previewing and sending emails. Defaults to `true` in development.
     language: 'html'                    // The template language to use. Defaults to 'html', but can be anything Meteor SSR supports (like Jade, for instance).
+    plainText: true                     // Send plain text version of HTML email as well.
+    plainTextOpts: {}                   // Options for `html-to-text` module. See all here: https://www.npmjs.com/package/html-to-text
   }
     ```
 
@@ -107,7 +136,7 @@ In `Mailer.init`, you're able to provide a key-value object with *template objec
     teamMembers: ->
       @team.users.map (user) -> Meteor.users.findOne(user)
 
-  # For previewing the email in your browser. Behaves like an ordinary Iron Router route.  
+  # For previewing the email in your browser.
   route:
     path: '/activity/:user'
     data: ->
@@ -177,7 +206,7 @@ Simple as a pie!
 
 This package assumes that assets (templates, SCSS, CSS ..) are stored in the `private` directory. Thanks to that, Meteor won't touch the HTML and CSS, which are non-JS files. Unfortunately, Meteor packages can't access content in `private` with the `Assets.getText()` method, so we need the *absolute path* to the template directory.
 
-However, file paths are screwed up when bundling and deploying Meteor apps. Therefore, when running a deployed instance, **one of the following variables must return the absolute path to the bundle:**
+However, file paths are screwed up when bundling and deploying Meteor apps. Therefore, when running a deployed instance, this package will try to figure out the absolute path to your bundle (see first ~30 lines in `utils.coffee`). If that still isn't working for you, fall back to this:
 
 1. For traditional hosts, manually set the `BUNDLE_PATH` environment variable. For instance `/var/www/app/bundle`.
 2. For deployments on hosts with ephemeral file systems like Modulus, the `APP_DIR` environment variable should be provided by host. In that case, `APP_DIR` is used instead.
@@ -205,15 +234,21 @@ The built in helpers are:
 baseUrl: (path) ->
   Utils.joinUrl(Mailer.settings.baseUrl, path)
 
-# `emailUrlFor` takes an Iron Router route (with optional params) and
+# `emailUrlFor` takes an Iron Router or Flow Router route (with optional params) and
 # creates an absolute URL.
 #
 #     {{ emailUrlFor 'myRoute' param='foo' }} => http://root-domain.com/my-route/foo
-emailUrlFor: (route, params) ->
-  if Router
-    Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, route, params.hash)
+emailUrlFor: (routeName, params) ->
+  # if Iron Router
+  if Router?
+    Utils.joinUrl Mailer.settings.baseUrl, Router.path.call(Router, routeName, params.hash)
 
+  # if Flow Router
+  if FlowRouter?
+    baseUrl = Utils.joinUrl Mailer.settings.baseUrl, FlowRouter.path.call(FlowRouter, routeName, params.hash)
 ```
+
+Please note that for Flow Router you need to have your routes defined in a place where the server can see them, in order for the `emailUrlFor` helper to work.
 
 #### The preview line
 
@@ -241,7 +276,9 @@ Just provide a `preview` helper function on your template *or* a `preview` prop 
 
 ### Layouts
 
-In order for you not to repeat yourself, the package supports **layouts**. They are plain wrapper around template HTML, so you can keep the same `<head>` styles, media queries, and more through many email templates. Layouts works like the other templates, i.e. they support helpers, SCSS/CSS, etc.
+In order for you not to repeat yourself, the package supports **layouts**. They are plain wrapper around template HTML, so you can keep the same `<head>` styles, media queries, and more through many email templates.
+
+Layouts are formatted and works like the other template objects, i.e. they support helpers, SCSS/CSS, etc.
 
 Put an `html` layout file in `private` and refer to it in `Mailer.init()`:
 
@@ -252,7 +289,8 @@ Mailer.init(
   layout:
     name: 'emailLayout'
     path: 'email-layout.html'
-    scss: 'scss/emails.scss'
+    scss: 'scss/emails.scss'    # Optional
+    css: 'css/emails.css'       # Optional
 )
 ```
 
@@ -263,6 +301,9 @@ Templates.invitationEmail =
   # .. props
   layout:
     name: 'specialLayout'
+    path: 'special-layout.html'
+    scss: 'scss/special-emails.scss'    # Optional
+    css: 'css/special-emails.css'       # Optional
 ```
 
 .. or not at all:
@@ -304,25 +345,43 @@ It's you to render the raw CSS in your layout:
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 ```
 
+### Plain text version
+
+By default, plain text versions are automatically created from your html template and included in the final email. It's strongly advises to leave this option on, as it greatly reduces your emails' spam score and the chance that your emails will end up in spam folder of users. However, if you want to override this behaviour simply at this to `Mailer.config()`:
+
+```coffeescript
+Mailer.config(
+  # ...
+  plainText: false,
+  plainTextOpts: {
+    // Your options to send to the module, defaults to {}
+    ignoreImage: true
+  }
+)
+```
+
+Consult the `html-to-text` [documentation](https://www.npmjs.com/package/html-to-text) for available options. See in the example app in this repo for how to disable images in plain text version, for instance.
+
 ### Previewing and Sending
 
 `lookback:emails` makes it easier to preview email designs in your browser. And you can even interface with you database collections in order to fill them emails with *real data*.
 
 It's also possible to *send* emails to yourself or others for review in a real mail client.
 
-Noticed the `route` property on the template? It uses Iron Router's server side routes under the hood.
+Noticed the `route` property on the template? It uses `meteorhacks:picker` server side routes under the hood.
 
-The `route` property expects a `path` property (feel free to use any of Iron Router's fanciness in here) and an optional `data` function providing the data context (an object). The function has access to the same scope as Iron Router's `action` hook, which means you can get a hold of parameters and the whole shebang.
+The `route` property expects a `path` property and an optional `data` function providing the data context (an object). The function has access to the parameters of the route.
 
-**Two routes** will be added:
+**Three routes** will be added:
 
 ```
-/emails/preview/<routeName>
-/emails/send/<routeName>
+/emails/preview/<routeName>   # Preview as HTML
+/emails/text/<routeName>      # Preview as plain text
+/emails/send/<routeName>      # Send the email to an address
 ```
 The `/emails` root prefix is configurable in `config` in the `routePrefix` key.
 
-The Iron Router *route names* will be on the format
+The *route names* will be on the format
 
 ```
 [preview|send]Name
@@ -332,6 +391,7 @@ So for a template named `newsletterEmail`, the route names will be
 
 ```
 previewNewsletterEmail
+textNewsletterEmail
 sendNewsletterEmail
 ```
 
@@ -410,6 +470,36 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.7.1` - Check for existence of `Blaze` global before extending with registered Blaze helpers.
+- `0.7.0` - Replaced Iron Router dependency with `meteorhacks:picker`, which means you can now use this package with FlowRouter as well.
+
+  **Breaking change:** If you're using `this.params` in your custom mail routes' data functions (for sending or previewing emails), you need to change the function signature to accept a `params` parameter, and use that instead.
+
+  `this` in data functions is now an instance of NodeJS' [`http.ServerResponse`](https://nodejs.org/api/http.html#http_class_http_serverresponse).
+
+  ```js
+route: {
+  path: '/sample/:name',
+  // params is an object, with potentially named parameters, and a `query` property
+  // for a potential query string.
+  data: function(params) {
+    // `this` is the HTTP response object.
+    return {
+      name: params.name // instead of this.params.name
+    };
+  }
+}
+  ```
+- `0.6.2` - Support passing options to `html-to-text` module in `Mailer.config()`.
+- `0.6.1`- Fix critical runtime crash when sending emails.
+- `0.6.0` - Automatically create and include plain text email version from your HTML templates, using [`html-to-text`](http://npmjs.com/package/html-to-text).
+- `0.5.1` - Remove need for setting the `BUNDLE_PATH` environment variable ([#39](https://github.com/lookback/meteor-emails/pull/39)).
+- `0.5.0` - Remove `node-sass` as hard dependency. SCSS support is now opt-in, by adding `chrisbutler:node-sass` to your app ([#35](https://github.com/lookback/meteor-emails/pull/35)).
+- `0.4.6` - Fix paths on Windows in development mode.
+- `0.4.5`
+  - CSS and SCSS is now compiled and inlined at runtime, in order to inline CSS for the rendered content. If CSS only was inlined at compile time, the dynamic content wouldn't get any styling.
+  - Because of the above, we received a small performance boost due to removal of excessive SCSS inlining and inlining.
+- `0.4.4` - Fix not using local template `layout` option.
 - `0.4.3` - Fix build issues by using externally packaged `node-sass` for Meteor.
 - `0.4.2`
   - Update `node-sass` to 3.2.0.
