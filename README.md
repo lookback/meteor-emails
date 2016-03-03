@@ -521,6 +521,12 @@ route: {
 
 PRs and help is welcomed.
 
+## Things to do
+
+- [ ] Tests.
+
+Also see [open issues](https://github.com/lookback/meteor-emails/issues).
+
 ***
 
 Made by [Lookback](http://github.com/lookback)
