@@ -1,3 +1,7 @@
+if (!process.env.MAIL_URL) {
+  process.env.MAIL_URL = Meteor.settings.MAIL_URL;
+}
+
 Mailer.config({
   from: 'John Doe <from@domain.com>',
   replyTo: 'John Doe <from@domain.com>',
