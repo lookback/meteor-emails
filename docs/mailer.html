@@ -10,51 +10,51 @@
 <body>
   <div id="container">
     <div id="background"></div>
-    
+
       <ul id="jump_to">
         <li>
           <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
           <a class="small" href="javascript:void(0);">+</a>
           <div id="jump_wrapper">
           <div id="jump_page">
-            
-              
+
+
               <a class="source" href="mailer.html">
                 mailer.js
               </a>
-            
-              
+
+
               <a class="source" href="routing.html">
                 routing.js
               </a>
-            
-              
+
+
               <a class="source" href="template-helpers.html">
                 template-helpers.js
               </a>
-            
-              
+
+
               <a class="source" href="utils.html">
                 utils.js
               </a>
-            
+
           </div>
         </li>
       </ul>
-    
+
     <ul class="sections">
-        
+
           <li id="title">
               <div class="annotation">
                   <h1>mailer.js</h1>
               </div>
           </li>
-        
-        
-        
+
+
+
         <li id="section-1">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
@@ -65,30 +65,30 @@ HTML emails in Meteor applications.</p>
 Made by Johan Brook for <a href="https://github.com/lookback">Lookback</a>.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>
 
 <span class="hljs-keyword">const</span> TAG = <span class="hljs-string">'mailer'</span>;</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-2">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
               <h2 id="setup">Setup</h2>
 
             </div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-3">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
@@ -103,7 +103,7 @@ Made by Johan Brook for <a href="https://github.com/lookback">Lookback</a>.</p>
 </ul>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>Mailer = {
   settings: {
     silent: <span class="hljs-literal">false</span>,
@@ -142,13 +142,13 @@ Made by Johan Brook for <a href="https://github.com/lookback">Lookback</a>.</p>
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
   }
 };</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-4">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
@@ -163,53 +163,53 @@ Made by Johan Brook for <a href="https://github.com/lookback">Lookback</a>.</p>
 with data, as well as sending emails from those templates.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> factory = (options) =&gt; {
   check(options, Match.ObjectIncluding({</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-5">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>Mailer <em>must</em> take a <code>templates</code> object with template names as keys.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>    templates: <span class="hljs-built_in">Object</span>,</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-6">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Take optional template helpers.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>    helpers: Match.Optional(<span class="hljs-built_in">Object</span>),</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-7">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>Take an optional layout template object.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>    layout: Match.Optional(Match.OneOf(<span class="hljs-built_in">Object</span>, <span class="hljs-built_in">Boolean</span>))
   }));
 
@@ -221,13 +221,13 @@ with data, as well as sending emails from those templates.</p>
   Utils.setupLogger(settings.logger, {
     suppressInfo: settings.silent
   });</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-8">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
@@ -236,19 +236,19 @@ from options, and <em>additional</em> template helpers, and apply them to
 the template.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">const</span> addHelpers = (template) =&gt; {
     check(template.name, <span class="hljs-built_in">String</span>);
     check(template.helpers, Match.Optional(<span class="hljs-built_in">Object</span>));
     <span class="hljs-keyword">return</span> Template[template.name].helpers(_.extend({}, globalHelpers, template.helpers));
   };</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-9">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
@@ -260,7 +260,7 @@ in the Template namespace.</p>
 can optionally have paths to any SCSS and CSS stylesheets.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">const</span> compile = (template) =&gt; {
     check(template, Match.ObjectIncluding({
       path: <span class="hljs-built_in">String</span>,
@@ -294,13 +294,13 @@ can optionally have paths to any SCSS and CSS stylesheets.</p>
 
       addHelpers(layout);
     }</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-10">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
@@ -308,34 +308,34 @@ can optionally have paths to any SCSS and CSS stylesheets.</p>
 <pre><code>Template.&lt;template.name&gt;
 </code></pre>
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">const</span> tmpl = SSR.compileTemplate(template.name, content, {
       language: settings.language
     });</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-11">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p>Add helpers to template.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>    addHelpers(template);
     <span class="hljs-keyword">return</span> tmpl;
   };</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-12">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
@@ -344,7 +344,7 @@ can optionally have paths to any SCSS and CSS stylesheets.</p>
 Will compile the template if not done already.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">const</span> render = (templateName, data) =&gt; {
     check(templateName, <span class="hljs-built_in">String</span>);
     check(data, Match.Optional(<span class="hljs-built_in">Object</span>));
@@ -370,13 +370,13 @@ Will compile the template if not done already.</p>
 
       <span class="hljs-keyword">let</span> preview = <span class="hljs-literal">null</span>;
       <span class="hljs-keyword">let</span> css = <span class="hljs-literal">null</span>;</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-13">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
@@ -387,19 +387,19 @@ layout scope as well.</p>
 <code>preview</code> prop in the data context to apply to the layout.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (tmpl.__helpers.has(<span class="hljs-string">'preview'</span>)) {
         preview = tmpl.__helpers.get(<span class="hljs-string">'preview'</span>);
       } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (data.preview) {
         preview = data.preview;
       }</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-14">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
@@ -407,7 +407,7 @@ layout scope as well.</p>
 the layout in <code>&lt;style&gt;</code> tags. Ideal for media queries.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (template.extraCSS) {
         <span class="hljs-keyword">try</span> {
           css = Utils.readFile(template.extraCSS);
@@ -432,13 +432,13 @@ the layout in <code>&lt;style&gt;</code> tags. Ideal for media queries.</p>
     rendered = Utils.addDoctype(rendered);
     <span class="hljs-keyword">return</span> rendered;
   };</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-15">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
@@ -447,12 +447,14 @@ the layout in <code>&lt;style&gt;</code> tags. Ideal for media queries.</p>
 including the template name and optional data object.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">const</span> sendEmail = (options) =&gt; {
     check(options, {
       to: <span class="hljs-built_in">String</span>,
       subject: <span class="hljs-built_in">String</span>,
       template: <span class="hljs-built_in">String</span>,
+      cc: Match.Optional(<span class="hljs-built_in">String</span>),
+      bcc: Match.Optional(<span class="hljs-built_in">String</span>),
       replyTo: Match.Optional(<span class="hljs-built_in">String</span>),
       from: Match.Optional(<span class="hljs-built_in">String</span>),
       data: Match.Optional(<span class="hljs-built_in">Object</span>),
@@ -468,13 +470,13 @@ including the template name and optional data object.</p>
     }
 
     <span class="hljs-keyword">const</span> opts = _.extend({}, defaults, options);</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-16">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
@@ -482,7 +484,7 @@ including the template name and optional data object.</p>
 create plain-text version from HTML.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">try</span> {
       opts.html = render(options.template, options.data);
       <span class="hljs-keyword">if</span> (settings.plainText) {
@@ -525,13 +527,13 @@ create plain-text version from HTML.</p>
     init
   };
 };</pre></div></div>
-            
+
         </li>
-        
-        
+
+
         <li id="section-17">
             <div class="annotation">
-              
+
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
@@ -540,7 +542,7 @@ Any middleware needs to be called upon before we run the
 inner <code>init()</code> function.</p>
 
             </div>
-            
+
             <div class="content"><div class='highlight'><pre>Mailer.init = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(opts)</span> </span>{
   <span class="hljs-keyword">const</span> obj = _.extend(<span class="hljs-keyword">this</span>, factory(opts));
 
@@ -550,9 +552,9 @@ inner <code>init()</code> function.</p>
 
   obj.init();
 };</pre></div></div>
-            
+
         </li>
-        
+
     </ul>
   </div>
 </body>
