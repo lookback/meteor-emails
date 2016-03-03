@@ -23,7 +23,7 @@ Package.onUse(function(api) {
   ], where, { weak: true });
 
   api.use([
-    'ecmascript',
+    'ecmascript@0.1.5',
     'check',
     'underscore',
     'email',
