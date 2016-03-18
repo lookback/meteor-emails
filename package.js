@@ -28,7 +28,7 @@ Package.onUse(function(api) {
     'underscore',
     'email',
     'sacha:juice@0.1.3',
-    'meteorhacks:ssr@2.1.2',
+    'meteorhacks:ssr@2.2.0',
     'meteorhacks:picker@1.0.3'
   ], where);
 
