@@ -1,21 +1,5 @@
 {
-  "extends": "eslint:recommended",
-  "rules": {
-    "brace-style": [2, "1tbs", { "allowSingleLine": true }],
-    "strict": 0,
-    "quotes": [2, "single"],
-    "no-underscore-dangle": 0,
-    "curly": 0,
-    "no-unused-vars": 1,
-    "no-console": 0,
-    "no-var": 2
-  },
-
-  "env": {
-    "node": true,
-    "meteor": true,
-    "es6": true
-  },
+  "extends": "lookback/meteor",
 
   "globals": {
     "Mailer": true,
@@ -26,6 +10,7 @@
     "TemplateHelpers": true,
     "SSR": false,
     "Picker": false,
-    "Routing": true
+    "Routing": true,
+    "Templates": true
   }
 }

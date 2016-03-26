@@ -1,3 +1,6 @@
 .DS_Store
 .sass-cache/
 .npm/
+example/settings.json
+npm-debug.log
+node_modules

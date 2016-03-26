@@ -1,0 +1,22 @@
+{
+  "name": "lookback-emails",
+  "version": "0.7.2",
+  "description": "`lookback:emails` is a Meteor package that makes it easier to build, test and debug rich HTML emails.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lookback/meteor-emails.git"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint ."
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lookback/meteor-emails/issues"
+  },
+  "devDependencies": {
+    "babel-eslint": "^5.0.0",
+    "babel-preset-es2015": "^6.3.13",
+    "eslint": "^2.2.0",
+    "eslint-config-lookback": "lookback/eslint-config-lookback"
+  }
+}

@@ -34,7 +34,7 @@ jquery@1.11.4
 kadira:flow-router@2.9.0
 livedata@1.0.15
 logging@1.0.8
-lookback:emails@0.7.1
+lookback:emails@0.7.2
 meteor@1.1.9
 meteor-base@1.0.1
 meteorhacks:picker@1.0.3
