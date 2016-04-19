@@ -112,7 +112,8 @@ Please inspect the provided sample code for details.
     from: 'Name <name@domain.com>',         // Override global 'From: ' option.
     cc: 'Name <name@domain.com>',           // Optional.
     bcc: 'Name <name@domain.com>',          // Optional.
-    data: {}                                // Optional. Render your email with a data object.
+    data: {},                               // Optional. Render your email with a data object.
+    attachments: {}                         // Optional. Attach files using a mailcomposer format.
   }
     ```
 
