@@ -112,7 +112,8 @@ Please inspect the provided sample code for details.
     from: 'Name <name@domain.com>',         // Override global 'From: ' option.
     cc: 'Name <name@domain.com>',           // Optional.
     bcc: 'Name <name@domain.com>',          // Optional.
-    data: {}                                // Optional. Render your email with a data object.
+    data: {},                               // Optional. Render your email with a data object.
+    attachments: {}                         // Optional. Attach files using a mailcomposer format.
   }
     ```
 
@@ -472,6 +473,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.7.3`- Support for attachments (thanks @cubicuboctahedron!).
 - `0.7.2` - Support `cc` and `bcc` options to `Mailer.send()`. Filed in [#52](https://github.com/lookback/meteor-emails/issues/52), fixed in [#54](https://github.com/lookback/meteor-emails/pull/54).
 - `0.7.1` - Check for existence of `Blaze` global before extending with registered Blaze helpers.
 - `0.7.0` - Replaced Iron Router dependency with `meteorhacks:picker`, which means you can now use this package with FlowRouter as well.
