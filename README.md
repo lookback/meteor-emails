@@ -317,6 +317,25 @@ Templates.invitationEmail =
   layout: false
 ```
 
+The contents of the layout HTML file might look like:
+
+```html
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{{preview}}</title>
+  </head>
+  <body>
+    <p class="hide preview-text">{{#if preview}}{{preview}}{{else}}Default preview.{{/if}}</p>
+
+    <!-- This is where the actual template content will be inserted. -->
+    {{{ body }}}
+  </body>
+</html>
+```
+
 If you want to provide extra CSS to your layout's `<head>` section *from template* (perhaps custom media queries for that specific template) you can provide the `extraCSS` option:
 
 ```coffeescript
@@ -339,6 +358,8 @@ It's you to render the raw CSS in your layout:
       {{{ css }}}
     </style>
   </head>
+
+  <!-- ... -->
 </html>
 ```
 
