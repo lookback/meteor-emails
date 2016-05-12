@@ -113,7 +113,7 @@ Please inspect the provided sample code for details.
     cc: 'Name <name@domain.com>',           // Optional.
     bcc: 'Name <name@domain.com>',          // Optional.
     data: {},                               // Optional. Render your email with a data object.
-    attachments: {}                         // Optional. Attach files using a mailcomposer format.
+    attachments: []                         // Optional. Attach files using a mailcomposer format, as an array of objects. Read more here: http://docs.meteor.com/#/full/email_send and here: https://github.com/nodemailer/mailcomposer#attachments
   }
     ```
 
