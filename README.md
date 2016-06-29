@@ -494,6 +494,7 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.7.4` - Fix incorrect Meteor root path in developer mode. Filed in [#66](https://github.com/lookback/meteor-emails/issues/66), fixed in [#67](https://github.com/lookback/meteor-emails/pull/67). Thanks @pierrelouisd4j!
 - `0.7.3`- Support for attachments (thanks @cubicuboctahedron!).
 - `0.7.2` - Support `cc` and `bcc` options to `Mailer.send()`. Filed in [#52](https://github.com/lookback/meteor-emails/issues/52), fixed in [#54](https://github.com/lookback/meteor-emails/pull/54).
 - `0.7.1` - Check for existence of `Blaze` global before extending with registered Blaze helpers.
