@@ -112,9 +112,13 @@ Please inspect the provided sample code for details.
     from: 'Name <name@domain.com>',         // Override global 'From: ' option.
     cc: 'Name <name@domain.com>',           // Optional.
     bcc: 'Name <name@domain.com>',          // Optional.
-    data: {}                                // Optional. Render your email with a data object.
+    data: {},                               // Optional. Render your email with a data object.
+    attachments: []                         // Optional. Attach files using a mailcomposer format, as an array of objects.
+                                            // Read more here: http://docs.meteor.com/#/full/email_send and here: https://github.com/nodemailer/mailcomposer/blob/7c0422b2de2dc61a60ba27cfa3353472f662aeb5/README.md#add-attachments
   }
     ```
+
+*Note:* The official MailComposer README section on Attachment is apparently incorrect, as documented in [#69](https://github.com/lookback/meteor-emails/issues/69), or Meteor's `Email` is using an outdated version (probably the latter). So use `fileName`, `filePath`, etc. instead of `filename`, `path`, etc. when sending attachment objects.
 
 ## Usage
 
@@ -316,6 +320,25 @@ Templates.invitationEmail =
   layout: false
 ```
 
+The contents of the layout HTML file might look like:
+
+```html
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{{preview}}</title>
+  </head>
+  <body>
+    <p class="hide preview-text">{{#if preview}}{{preview}}{{else}}Default preview.{{/if}}</p>
+
+    <!-- This is where the actual template content will be inserted. -->
+    {{{ body }}}
+  </body>
+</html>
+```
+
 If you want to provide extra CSS to your layout's `<head>` section *from template* (perhaps custom media queries for that specific template) you can provide the `extraCSS` option:
 
 ```coffeescript
@@ -338,6 +361,8 @@ It's you to render the raw CSS in your layout:
       {{{ css }}}
     </style>
   </head>
+
+  <!-- ... -->
 </html>
 ```
 
@@ -472,6 +497,8 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.7.4` - Fix incorrect Meteor root path in developer mode. Filed in [#66](https://github.com/lookback/meteor-emails/issues/66), fixed in [#67](https://github.com/lookback/meteor-emails/pull/67). Thanks @pierrelouisd4j!
+- `0.7.3`- Support for attachments (thanks @cubicuboctahedron!).
 - `0.7.2` - Support `cc` and `bcc` options to `Mailer.send()`. Filed in [#52](https://github.com/lookback/meteor-emails/issues/52), fixed in [#54](https://github.com/lookback/meteor-emails/pull/54).
 - `0.7.1` - Check for existence of `Blaze` global before extending with registered Blaze helpers.
 - `0.7.0` - Replaced Iron Router dependency with `meteorhacks:picker`, which means you can now use this package with FlowRouter as well.
