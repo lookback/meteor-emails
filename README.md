@@ -44,13 +44,21 @@ meteor add lookback:emails
 
 A `Mailer` global will exported on the *server*.
 
-**Notice.** If you want SCSS support, be sure to add the `[meteor-node-sass](https://github.com/chrisbutler/meteor-node-sass)` package to your app:
+### Sass support
+
+If you want SCSS support, be sure to add the official `node-sass` npm package to your app's `package.json` file:
+
+```
+meteor npm install --save node-sass
+```
+
+If you're on a Meteor version earlier than 1.3, please use the `chrisbutler:node-sass` package from Atmosphere:
 
 ```
 meteor add chrisbutler:node-sass
 ```
 
-`lookback:emails` will automatically detect `node-sass` being available, and will be able to compile `.scss` files.
+`lookback:emails` will automatically detect that `node-sass` is available, and will be able to compile `.scss` files.
 
 ## Sample app
 
