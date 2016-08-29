@@ -11,7 +11,7 @@ Mailer.config({
   }
 });
 
-Meteor.startup(function() {
+Meteor.startup(() => {
 
   Mailer.init({
     templates: Templates,     // Global Templates namespace, see lib/templates.js.
@@ -22,5 +22,4 @@ Meteor.startup(function() {
       scss: 'layout.scss'
     }
   });
-
 });
