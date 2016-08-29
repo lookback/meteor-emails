@@ -497,6 +497,9 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.7.5`
+  - Better support for Sass in 1.3+ Meteor apps: if you have `node-sass` from npm defined in your app's `package.json`, we'll try `require`'ing from there. This approach is recommended. Pre-1.4 apps can still use the existing `chrisbutler:node-sass` Meteor package.
+  - Updated `html-to-text` dependency to 2.1.3.
 - `0.7.4` - Fix incorrect Meteor root path in developer mode. Filed in [#66](https://github.com/lookback/meteor-emails/issues/66), fixed in [#67](https://github.com/lookback/meteor-emails/pull/67). Thanks @pierrelouisd4j!
 - `0.7.3`- Support for attachments (thanks @cubicuboctahedron!).
 - `0.7.2` - Support `cc` and `bcc` options to `Mailer.send()`. Filed in [#52](https://github.com/lookback/meteor-emails/issues/52), fixed in [#54](https://github.com/lookback/meteor-emails/pull/54).
