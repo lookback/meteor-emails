@@ -1,4 +1,4 @@
-/* eslint no-var: 0*/
+/* eslint-disable no-var, prefer-arrow-callback */
 var where = 'server';
 
 Package.describe({
@@ -10,7 +10,6 @@ Package.describe({
 
 Npm.depends({
   'html-to-text': '2.1.3'
-  'node-sass': '3.8.0'
 });
 
 Package.onUse(function(api) {
@@ -41,12 +40,4 @@ Package.onUse(function(api) {
   ], where);
 
   api.export('Mailer', where);
-});
-
-Package.onTest(function(api) {
-  api.use([
-    'practicalmeteor:mocha',
-    'ecmascript',
-    'lookback:emails'
-  ], where);
 });

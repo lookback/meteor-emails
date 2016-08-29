@@ -6,7 +6,7 @@
 
 ecmascript
 lookback:emails
-chrisbutler:node-sass@3.2.0
+#chrisbutler:node-sass@3.2.0
 meteor-base
 blaze-html-templates
 reload
