@@ -9,7 +9,7 @@ Package.describe({
 });
 
 Npm.depends({
-  'html-to-text': '1.3.0',
+  'html-to-text': '2.1.3'
   'node-sass': '3.8.0'
 });
 
