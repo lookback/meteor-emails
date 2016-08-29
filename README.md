@@ -113,9 +113,12 @@ Please inspect the provided sample code for details.
     cc: 'Name <name@domain.com>',           // Optional.
     bcc: 'Name <name@domain.com>',          // Optional.
     data: {},                               // Optional. Render your email with a data object.
-    attachments: []                         // Optional. Attach files using a mailcomposer format, as an array of objects. Read more here: http://docs.meteor.com/#/full/email_send and here: https://github.com/nodemailer/mailcomposer#attachments
+    attachments: []                         // Optional. Attach files using a mailcomposer format, as an array of objects.
+                                            // Read more here: http://docs.meteor.com/#/full/email_send and here: https://github.com/nodemailer/mailcomposer/blob/7c0422b2de2dc61a60ba27cfa3353472f662aeb5/README.md#add-attachments
   }
     ```
+
+*Note:* The official MailComposer README section on Attachment is apparently incorrect, as documented in [#69](https://github.com/lookback/meteor-emails/issues/69), or Meteor's `Email` is using an outdated version (probably the latter). So use `fileName`, `filePath`, etc. instead of `filename`, `path`, etc. when sending attachment objects.
 
 ## Usage
 
