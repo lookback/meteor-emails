@@ -6,9 +6,11 @@
     "type": "git",
     "url": "git+https://github.com/lookback/meteor-emails.git"
   },
+  "author": "Johan Brook",
   "scripts": {
-    "lint": "./node_modules/.bin/eslint .",
-    "test": "make test",
+    "lint": "make lint",
+    "pretest": "npm run lint",
+    "test": "make test-app && make test-package",
     "test:watch": "make test-watch"
   },
   "license": "MIT",

@@ -1,4 +1,4 @@
-TemplateHelpers = {
+export default {
 
   enumerate(arr, limit, oxfordComma) {
     if (arr) {
@@ -24,7 +24,7 @@ TemplateHelpers = {
       let suffix = ' and ';
 
       if (oxfordComma === true
-        || (typeof oxfordComma === 'number' && length >= oxfordComma)) {
+        || typeof oxfordComma === 'number' && length >= oxfordComma) {
         suffix = `, ${suffix}`;
       }
 

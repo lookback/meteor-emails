@@ -12,12 +12,14 @@ caching-compiler@1.0.5_1
 caching-html-compiler@1.0.6
 callback-hook@1.0.9
 check@1.2.3
+coffeescript@1.0.17
 ddp@1.2.5
 ddp-client@1.2.8_1
 ddp-common@1.2.6
 ddp-server@1.2.8_1
 deps@1.0.12
 diff-sequence@1.0.6
+dispatch:mocha@0.0.9
 ecmascript@0.4.6_1
 ecmascript-runtime@0.2.11_1
 ejson@1.0.12
@@ -47,6 +49,8 @@ mongo-id@1.0.5
 npm-mongo@1.4.44_1
 observe-sequence@1.0.12
 ordered-dict@1.0.8
+practicalmeteor:chai@2.1.0_1
+practicalmeteor:mocha-core@1.0.1
 promise@0.7.2_1
 random@1.0.10
 reactive-dict@1.1.8
