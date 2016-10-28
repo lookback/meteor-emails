@@ -1,5 +1,7 @@
 # Meteor Emails
 
+[![CircleCI](https://circleci.com/gh/lookback/meteor-emails.svg?style=shield)](https://circleci.com/gh/lookback/meteor-emails)
+
 `lookback:emails` is a Meteor package that makes it easier to build, test and debug rich HTML emails.
 
 Usually, building HTML emails yourself is tedious. On top of that, add the need for data integration and thus a template language (for sending out daily digest emails, for instance). We wanted a way to preview the email in the browser *with real data* in order to quickly iterate on the design, instead of alternating between code editor and email client.
@@ -562,7 +564,7 @@ route: {
 
 PRs and help is welcomed.
 
-## Develop
+### Develop
 
 Clone repo, and run:
 
@@ -570,9 +572,27 @@ Clone repo, and run:
 npm install
 ```
 
-to install dev dev dependencies. We're using ESLint for linting.
+to install dev dev dependencies. We're using ESLint for linting. Lint with:
 
-## Things to do
+```
+npm run lint
+```
+
+Run tests with:
+
+```
+npm test
+```
+
+or have test watching with:
+
+```
+npm run test:watch
+```
+
+You'll find tests in the `lib` directory along with the source files.
+
+### Things to do
 
 - [ ] Tests.
 
@@ -580,4 +600,4 @@ Also see [open issues](https://github.com/lookback/meteor-emails/issues).
 
 ***
 
-Made by [Lookback](http://github.com/lookback)
+Made by [Johan](http://johanbrook.com) in [Lookback](http://github.com/lookback)

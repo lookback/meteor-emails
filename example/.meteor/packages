@@ -4,14 +4,18 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-ecmascript
+ecmascript@0.5.9
 lookback:emails
 #chrisbutler:node-sass@3.2.0
-meteor-base
+meteor-base@1.0.4
 blaze-html-templates
-reload
+reload@1.1.11
 spacebars
 kadira:flow-router
 #iron:router
-standard-minifier-css
-standard-minifier-js
+standard-minifier-css@1.3.2
+standard-minifier-js@1.2.1
+
+practicalmeteor:chai
+dispatch:mocha
+shell-server

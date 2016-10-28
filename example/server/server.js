@@ -1,3 +1,6 @@
+import TemplateHelpers from './lib/template-helpers';
+import Templates from './lib/templates';
+
 if (!process.env.MAIL_URL) {
   process.env.MAIL_URL = Meteor.settings.MAIL_URL;
 }
