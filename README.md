@@ -1,5 +1,7 @@
 # Meteor Emails
 
+[![CircleCI](https://circleci.com/gh/lookback/meteor-emails.svg?style=shield)](https://circleci.com/gh/lookback/meteor-emails)
+
 `lookback:emails` is a Meteor package that makes it easier to build, test and debug rich HTML emails.
 
 Usually, building HTML emails yourself is tedious. On top of that, add the need for data integration and thus a template language (for sending out daily digest emails, for instance). We wanted a way to preview the email in the browser *with real data* in order to quickly iterate on the design, instead of alternating between code editor and email client.
