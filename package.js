@@ -23,7 +23,7 @@ Package.onUse(function(api) {
   ], where, { weak: true });
 
   api.use([
-    'ecmascript@0.1.5',
+    'ecmascript',
     'check',
     'underscore',
     'email',
@@ -35,9 +35,19 @@ Package.onUse(function(api) {
   api.addFiles([
     'lib/utils.js',
     'lib/template-helpers.js',
-    'lib/routing.js',
-    'lib/mailer.js'
+    'export.js'
   ], where);
 
   api.export('Mailer', where);
+});
+
+Package.onTest(function(api) {
+  api.use([
+    'ecmascript',
+    'dispatch:mocha',
+    'practicalmeteor:chai',
+    'lookback:emails'
+  ], 'server');
+
+  api.mainModule('tests.js', 'server');
 });

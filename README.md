@@ -562,7 +562,7 @@ route: {
 
 PRs and help is welcomed.
 
-## Develop
+### Develop
 
 Clone repo, and run:
 
@@ -570,9 +570,27 @@ Clone repo, and run:
 npm install
 ```
 
-to install dev dev dependencies. We're using ESLint for linting.
+to install dev dev dependencies. We're using ESLint for linting. Lint with:
 
-## Things to do
+```
+npm run lint
+```
+
+Run tests with:
+
+```
+npm test
+```
+
+or have test watching with:
+
+```
+npm run test:watch
+```
+
+You'll find tests in the `lib` directory along with the source files.
+
+### Things to do
 
 - [ ] Tests.
 
@@ -580,4 +598,4 @@ Also see [open issues](https://github.com/lookback/meteor-emails/issues).
 
 ***
 
-Made by [Lookback](http://github.com/lookback)
+Made by [Johan](http://johanbrook.com) in [Lookback](http://github.com/lookback)

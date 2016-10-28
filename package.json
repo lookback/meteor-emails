@@ -7,7 +7,9 @@
     "url": "git+https://github.com/lookback/meteor-emails.git"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/eslint ."
+    "lint": "./node_modules/.bin/eslint .",
+    "test": "make test",
+    "test:watch": "make test-watch"
   },
   "license": "MIT",
   "bugs": {

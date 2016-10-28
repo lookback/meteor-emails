@@ -7,10 +7,7 @@
     "juice": false,
     "FlowRouter": false,
     "Router": false,
-    "TemplateHelpers": true,
     "SSR": false,
-    "Picker": false,
-    "Routing": true,
-    "Templates": true
+    "Picker": false
   }
 }
