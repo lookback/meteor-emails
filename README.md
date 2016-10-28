@@ -507,6 +507,10 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.7.6`
+  - Fix [#76](https://github.com/lookback/meteor-emails/issues/76) by finding the correct paths to email templates in unit and app test mode (fixed in [#78](https://github.com/lookback/meteor-emails/pull/78), thanks @thebarty !).
+  - Update example app to Meteor 1.4.2.
+  - Run package and app tests in CI.
 - `0.7.5`
   - Better support for Sass in 1.3+ Meteor apps: if you have `node-sass` from npm defined in your app's `package.json`, we'll try `require`'ing from there. This approach is recommended. Pre-1.4 apps can still use the existing `chrisbutler:node-sass` Meteor package.
   - Updated `html-to-text` dependency to 2.1.3.
