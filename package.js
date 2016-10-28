@@ -33,8 +33,6 @@ Package.onUse(function(api) {
   ], where);
 
   api.addFiles([
-    'lib/utils.js',
-    'lib/template-helpers.js',
     'export.js'
   ], where);
 
@@ -44,9 +42,10 @@ Package.onUse(function(api) {
 Package.onTest(function(api) {
   api.use([
     'ecmascript',
+    'underscore',
     'dispatch:mocha',
     'practicalmeteor:chai',
-    'lookback:emails'
+    'lookback:emails',
   ], 'server');
 
   api.mainModule('tests.js', 'server');

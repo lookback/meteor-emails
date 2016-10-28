@@ -3,7 +3,6 @@
 
   "globals": {
     "Mailer": true,
-    "Utils": true,
     "juice": false,
     "FlowRouter": false,
     "Router": false,

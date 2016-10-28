@@ -1,3 +1,3 @@
-import { theModule } from './lib/mailer';
+import { Mailer as theModule } from './lib/mailer';
 
 Mailer = theModule;
