@@ -18,4 +18,4 @@ standard-minifier-js@1.2.1
 
 practicalmeteor:chai
 dispatch:mocha
-shell-server
+shell-server@0.2.1
