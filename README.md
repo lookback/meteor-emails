@@ -507,9 +507,6 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
-
-- `0.7.7`
-  - Fix [#80](https://github.com/lookback/meteor-emails/issues/80) by adding underscore to NPM dependancies (fixed in [#78](https://github.com/lookback/meteor-emails/pull/78), thanks @grabcode !).
 - `0.7.6`
   - Fix [#76](https://github.com/lookback/meteor-emails/issues/76) by finding the correct paths to email templates in unit and app test mode (fixed in [#78](https://github.com/lookback/meteor-emails/pull/78), thanks @thebarty !).
   - Update example app to Meteor 1.4.2.

@@ -27,9 +27,9 @@ html-tools@1.0.10
 htmljs@1.0.10
 id-map@1.0.8
 jquery@1.11.9
-local-test:lookback:emails@0.7.7
+local-test:lookback:emails@0.7.6
 logging@1.0.13_1
-lookback:emails@0.7.7
+lookback:emails@0.7.6
 meteor@1.6.0
 meteorhacks:picker@1.0.3
 meteorhacks:ssr@2.2.0
