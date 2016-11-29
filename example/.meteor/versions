@@ -34,7 +34,7 @@ jquery@1.11.10
 kadira:flow-router@2.12.1
 livedata@1.0.18
 logging@1.0.14
-lookback:emails@0.7.6
+lookback:emails@0.7.7
 lookback:html-to-text@2.1.3_2
 meteor@1.6.0
 meteor-base@1.0.4
