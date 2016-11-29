@@ -8,10 +8,6 @@ Package.describe({
   git: 'https://github.com/lookback/meteor-emails.git'
 });
 
-Npm.depends({
-  'html-to-text': '2.1.3'
-});
-
 Package.onUse(function(api) {
 
   api.versionsFrom('1.0.4');
@@ -29,7 +25,8 @@ Package.onUse(function(api) {
     'email',
     'sacha:juice@0.1.3',
     'meteorhacks:ssr@2.2.0',
-    'meteorhacks:picker@1.0.3'
+    'meteorhacks:picker@1.0.3',
+    'lookback:html-to-text@2.1.3_2'
   ], where);
 
   api.addFiles([
