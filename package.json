@@ -1,6 +1,6 @@
 {
   "name": "lookback-emails",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "description": "`lookback:emails` is a Meteor package that makes it easier to build, test and debug rich HTML emails.",
   "repository": {
     "type": "git",
