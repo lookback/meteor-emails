@@ -15,7 +15,9 @@ Package.onUse(function(api) {
   api.use([
     'chrisbutler:node-sass@3.2.0',
     'iron:router@1.0.7',
-    'kadira:flow-router@2.9.0'
+    'kadira:flow-router@2.9.0',
+    'staringatlights:flow-router',
+    'ostrio:flow-router-extra'
   ], where, { weak: true });
 
   api.use([
