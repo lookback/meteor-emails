@@ -2,7 +2,7 @@
 
 git stash && \
 git checkout -b gh-pages && \
-rm -rf example && \
+rm -rf .example && \
 docco lib/*.js && \
 git add docs && \
 git commit -a -m 'Generate documentation' && \

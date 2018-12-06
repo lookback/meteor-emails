@@ -8,10 +8,10 @@ test-package:
 	@meteor test-packages ./ --driver-package $(TEST_DRIVER) --once --port $(PORT)
 
 test-app:
-	@cd example && npm test -- --port $(PORT) && cd -
+	@cd .example && npm test -- --port $(PORT) && cd -
 
 test-app-watch:
-	@cd example && npm run test:watch -- --port $(PORT)
+	@cd .example && npm run test:watch -- --port $(PORT)
 
 test-watch:
 	@TEST_WATCH=1 meteor test-packages ./ --driver-package $(TEST_DRIVER) --port $(PORT)
