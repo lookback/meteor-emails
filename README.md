@@ -6,22 +6,27 @@
 
 Usually, building HTML emails yourself is tedious. On top of that, add the need for data integration and thus a template language (for sending out daily digest emails, for instance). We wanted a way to preview the email in the browser *with real data* in order to quickly iterate on the design, instead of alternating between code editor and email client.
 
-1. [Features](#features)
-2. [Installation](#installation)
-3. [Sample app](#sample-app)
-4. [API](#api)
-5. [Usage](#usage)
-   1. [Setting up templates](#setting-up-templates)
-   2. [Template paths on deployed instances](#template-paths-on-deployed-instances)
-   3. [Template helpers](#template-helpers)
-   4. [Layouts](#layouts)
-   5. [Plain text version](#plain-text)
-   6. [Previewing and sending](#previewing-and-sending)
-   7. [Paths](#paths)
-   8. [Sample file structure](#sample-file-structure)
-   9. [Logging](#logging)
-6. [Version history](#version-history)
-7. [Contributing](#contributing)
+- [Meteor Emails](#meteor-emails)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [Sass support](#sass-support)
+  - [Sample app](#sample-app)
+  - [API](#api)
+  - [Usage](#usage)
+    - [Setting up templates](#setting-up-templates)
+    - [Template paths on deployed instances](#template-paths-on-deployed-instances)
+    - [Template Helpers](#template-helpers)
+      - [The preview line](#the-preview-line)
+    - [Layouts](#layouts)
+    - [Plain text version](#plain-text-version)
+    - [Previewing and Sending](#previewing-and-sending)
+    - [Paths](#paths)
+    - [Sample file structure](#sample-file-structure)
+    - [Logging](#logging)
+  - [Version history](#version-history)
+  - [Contributing](#contributing)
+    - [Develop](#develop)
+    - [Things to do](#things-to-do)
 
 ## Features
 
@@ -507,6 +512,9 @@ Why not try [`meteor-logger`](https://github.com/lookback/meteor-logger)? :)
 
 ## Version history
 
+- `0.7.8`
+  - Fix correct `node-sass` version in example project (thanks @humop!).
+  - Rename example project to `.example` to avoid Meteor picking it up (thanks @droka!).
 - `0.7.7` - Depend on [Atmosphere versino](https://atmospherejs.com/lookback/html-to-text) of `html-to-text` module to solve Meteor build error in [#80](https://github.com/lookback/meteor-emails/issues/80).
 - `0.7.6`
   - Fix [#76](https://github.com/lookback/meteor-emails/issues/76) by finding the correct paths to email templates in unit and app test mode (fixed in [#78](https://github.com/lookback/meteor-emails/pull/78), thanks @thebarty !).
