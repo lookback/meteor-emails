@@ -64,10 +64,10 @@ meteor add chrisbutler:node-sass
 
 ## Sample app
 
-There is a sample application in this repo, in the `example` directory. Boot it up, and preview an email with:
+There is a sample application in this repo, in the `.example` directory. Boot it up, and preview an email with:
 
 ```bash
-cd example
+cd .example
 meteor
 open http://localhost:3000/emails/preview/sample/john
 ```
